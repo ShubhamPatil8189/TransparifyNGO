@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2023"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+
+    /* JavaScript + JSX support */
+    "jsx": "react-jsx",
+    "allowJs": true,
+    "checkJs": false,
+
+    /* Path aliases (adjust if needed) */
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    },
+
+    /* Strict TypeScript settings removed for JS */
+    "noEmit": true,
+    "isolatedModules": true
+  },
+  "include": ["src"]
+}

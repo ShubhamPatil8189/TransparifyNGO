@@ -1,0 +1,42 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    },
+
+    /* JavaScript project options */
+    "allowJs": true,
+    "checkJs": false,
+
+    /* Remove TS-strict rules for JS projects */
+    "noImplicitAny": false,
+    "noUnusedParameters": false,
+    "noUnusedLocals": false,
+    "strictNullChecks": false,
+    "skipLibCheck": true,
+
+    /* React JSX support */
+    "jsx": "react-jsx"
+  },
+
+  "include": ["src"]
+}
+
+
+// {
+//   "files": [],
+//   "references": [{ "path": "./jsconfig.app.json" }, { "path": "./jsconfig.node.json" }],
+//   "compilerOptions": {
+//     "baseUrl": ".",
+//     "paths": {
+//       "@/*": ["./src/*"]
+//     },
+//     "noImplicitAny": false,
+//     "noUnusedParameters": false,
+//     "skipLibCheck": true,
+//     "allowJs": true,
+//     "noUnusedLocals": false,
+//     "strictNullChecks": false
+//   }
+// }
