@@ -1,6 +1,6 @@
 // Transaction.js
-const Transaction = new Schema({
-  ngoId: { type: Schema.Types.ObjectId, ref: 'NGO', required: true },
+import mongoose, { Schema } from 'mongoose';
+const transactionSchema = new mongoose.Schema({
   donorId: { type: Schema.Types.ObjectId, ref: 'Donor' },
   donorSnapshot: {}, // store donor name/email at time of transaction
   type: { type: String, enum: ['financial','in-kind','service','product'], required: true },
@@ -18,3 +18,6 @@ const Transaction = new Schema({
   receiptId: { type: Schema.Types.ObjectId, ref: 'Receipt' },
   auditHash: String
 });
+
+
+export default mongoose.model('Transaction', transactionSchema);
