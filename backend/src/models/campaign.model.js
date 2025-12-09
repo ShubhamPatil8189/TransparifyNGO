@@ -1,6 +1,7 @@
-// Campaign.js
-import mongoose, { Schema } from 'mongoose';
-const campaignSchema = new mongoose.Schema({
+const mongoose = require('mongoose');
+const { Schema } = mongoose;
+
+const campaignSchema = new Schema({
   title: String,
   description: String,
   goalAmount: Number,
@@ -12,5 +13,4 @@ const campaignSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now }
 });
 
-
-export default mongoose.model('Campaign', campaignSchema);
+module.exports = mongoose.model('Campaign', campaignSchema);

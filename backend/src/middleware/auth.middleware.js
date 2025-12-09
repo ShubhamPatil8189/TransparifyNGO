@@ -1,12 +1,11 @@
-import express from 'express';
-import mongoose from 'mongoose';
-import bodyParser from 'body-parser';
-import User from '../models/user.model.js';
-import validator from 'validator';
+const express = require('express');
+const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
+const User = require('../models/user.model.js');
+const validator = require('validator');
 
 const app = express();
 app.use(bodyParser.json());
-
 
 function validateOtpReq(req, res, next) {
   const { email } = req.body;
@@ -43,7 +42,6 @@ function checkTempRegister(req, res, next) {
   next(); 
 }
 
-
 function checkRegister(req, res, next) {
   const { email, code } = req.body;
 
@@ -55,10 +53,8 @@ function checkRegister(req, res, next) {
     return res.status(400).json({ error: 'Invalid email format.' });
   }
 
-
   next(); 
 }
-
 
 function checkLogin(req, res, next) {
   const { email, password } = req.body;
@@ -74,9 +70,7 @@ function checkLogin(req, res, next) {
   next();
 }
 
-
-
-export default {
+module.exports = {
   checkLogin,
   checkRegister,
   validateOtpReq,

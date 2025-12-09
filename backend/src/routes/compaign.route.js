@@ -1,15 +1,15 @@
-import express from "express";
-import { authMiddleware, adminOnly } from "../middleware/user.middleware.js";
-import {
+const express = require("express");
+const { authMiddleware, adminOnly } = require("../middleware/user.middleware.js");
+const {
   listNGOCampaigns,
   createCampaign,
   getCampaignById,
   donateToCampaign
-} from "../controllers/campaign.controller.js";
+} = require("../controllers/campaign.controller.js");
 
 const router = express.Router();
 
-// Public
+// Public routes
 router.get("/ngos/campaigns", listNGOCampaigns);
 router.get("/:id", getCampaignById);
 
@@ -19,4 +19,4 @@ router.post("/ngos/campaigns", authMiddleware, adminOnly, createCampaign);
 // Donate
 router.post("/:id/donate", authMiddleware, donateToCampaign);
 
-export default router;
+module.exports = router;

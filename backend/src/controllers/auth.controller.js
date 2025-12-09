@@ -1,16 +1,14 @@
+const express = require("express");
+const mongoose = require('mongoose');
+const User = require('../models/user.model.js');
+const jwt = require('jsonwebtoken');
+const { Types } = require('mongoose');
+const nodemailer = require('nodemailer');
+const axios = require('axios');
+const bcrypt = require('bcrypt');
+const dotenv = require('dotenv');
 
-import express from "express";
-import mongoose from 'mongoose';
-import User from '../models/user.model.js';
-import jwt from 'jsonwebtoken';
-import { Types } from 'mongoose';
-import nodemailer from 'nodemailer';
-import axios from 'axios';
-import bcrypt from 'bcrypt';
-
-import dotenv from 'dotenv';
 dotenv.config();
-
 
 const generateOTP = () => Math.floor(1000 + Math.random() * 9000);
 
@@ -19,7 +17,6 @@ const createToken = (key) => { // Update to key from id
         expiresIn: '7d'
     });
 }
-
 
 function logoutUser(req, res) {
     res.cookie('jwt', '', {
@@ -154,8 +151,6 @@ async function validateLogin(req, res) {
 };
 
 
-
-
 async function registerTempUser(req, res) {
     try {
         let tempUser;
@@ -187,6 +182,7 @@ async function registerTempUser(req, res) {
         return res.status(500).json({ message: "Internal Server Error" });
     }
 };
+
 
 async function validateRegister(req, res) {
     try {
@@ -227,12 +223,10 @@ async function validateRegister(req, res) {
 }
 
 
-
-export {
+module.exports = {
     sendOTP,
     validateLogin,
     validateRegister,
     logoutUser,
     registerTempUser
 };
-

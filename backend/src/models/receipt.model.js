@@ -1,6 +1,7 @@
-// Receipt.js
-import mongoose, { Schema } from 'mongoose';
-const receiptSchema = new mongoose.Schema({
+const mongoose = require('mongoose');
+const { Schema } = mongoose;
+
+const receiptSchema = new Schema({
   transactionId: { type: Schema.Types.ObjectId, ref: 'Transaction' },
   pdfUrl: String,
   qrCodeData: String, // encoded verification link/hash
@@ -8,5 +9,4 @@ const receiptSchema = new mongoose.Schema({
   verificationHash: String
 });
 
-
-export default mongoose.model('Receipt', receiptSchema);
+module.exports = mongoose.model('Receipt', receiptSchema);

@@ -1,7 +1,7 @@
-import jwt from 'jsonwebtoken';
-import User from '../models/user.model.js';
+const jwt = require('jsonwebtoken');
+const User = require('../models/user.model.js');
 
-export const authMiddleware = async (req, res, next) => {
+const authMiddleware = async (req, res, next) => {
     try {
         const token = req.cookies.jwt;
         if (!token) return res.status(401).json({ message: "Unauthorized: No token" });
@@ -18,10 +18,14 @@ export const authMiddleware = async (req, res, next) => {
     }
 };
 
-
-export const adminOnly = (req, res, next) => {
+const adminOnly = (req, res, next) => {
     if (!req.user.roles.includes("NGO_ADMIN")) {
         return res.status(403).json({ message: "Access denied: Admins only" });
     }
     next();
+};
+
+module.exports = {
+    authMiddleware,
+    adminOnly
 };

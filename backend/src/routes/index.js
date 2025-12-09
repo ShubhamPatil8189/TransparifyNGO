@@ -1,12 +1,13 @@
-import express from 'express';
-import userRoutes from './user.route.js';
-import authRoutes from './auth.route.js';
-import campaignRoutes from './compaign.route.js';
+const express = require('express');
+const userRoutes = require('./user.route.js');
+const authRoutes = require('./auth.route.js');
+const campaignRoutes = require('./compaign.route.js');
+
 const router = express.Router();
 
-
-router.use('/campaign', campaignRoutes);
+// Use routes
 router.use('/auth', authRoutes);
+router.use('/campaign', campaignRoutes);
 router.use('/user', userRoutes);
 
-export default router;
+module.exports = router;

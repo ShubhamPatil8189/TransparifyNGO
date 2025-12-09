@@ -1,14 +1,11 @@
-import User from '../models/user.model.js';
+const User = require('../models/user.model.js');
+const bcrypt = require('bcrypt');
 
-import bcrypt from "bcrypt";
-
-
-export const getMyProfile = (req, res) => {
+const getMyProfile = (req, res) => {
     return res.status(200).json(req.user);
 };
 
-
-export const updateMyProfile = async (req, res) => {
+const updateMyProfile = async (req, res) => {
     try {
         const { name, phone, address, password } = req.body;
 
@@ -39,8 +36,7 @@ export const updateMyProfile = async (req, res) => {
     }
 };
 
-
-export const listNGOUsers = async (req, res) => {
+const listNGOUsers = async (req, res) => {
     try {
         const users = await User.find({
             roles: { $in: ["NGO_ADMIN"] }   // only admins of the same NGO
@@ -53,3 +49,8 @@ export const listNGOUsers = async (req, res) => {
     }
 };
 
+module.exports = {
+    getMyProfile,
+    updateMyProfile,
+    listNGOUsers
+};

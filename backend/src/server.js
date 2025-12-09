@@ -1,17 +1,43 @@
-import express from 'express';
-import mongoose from 'mongoose';
-import cors from 'cors';
-import cookieParser from 'cookie-parser';
-import indexRouter from '../src/routes/index.js';
-import dotenv from 'dotenv';
+const express = require("express");
+const cors = require("cors");
+const dotenv = require("dotenv");
+const mongoose = require("mongoose");
+const cookieParser = require('cookie-parser');
+const indexRouter = require('../src/routes/index.js');
+
+const razorpayWebhookRoute = require("./routes/razorpayWebhook");
+const inKindTransactionsRoute = require("./routes/inKindTransactions");
+const transactionsRoute = require("./routes/transactions");
+const allTransactionsRoute = require("./routes/allTransactions");
+const path = require("path");
+const receiptRoute = require("./routes/receipt");
+const receiptVerifyRoute = require("./routes/receiptVerify");
+const receiptPdfRoute = require("./routes/receiptPdf");
+const inventory=require("./routes/inventoryRoutes");
+const transparency=require("./routes/publicTransparency");
 
 dotenv.config();
 
 const app = express();
-
-// Middleware
 app.use(express.json());
 app.use(cookieParser());
+// Middleware
+app.use(express.json());
+app.use("/receipts", express.static(path.join(__dirname, "receipts")));
+
+
+// Routes
+app.use("/api/transactions", transactionsRoute);
+app.use("/api/transactions/in-kind", inKindTransactionsRoute);
+app.use("/api/transactions/all", allTransactionsRoute);
+app.use("/api/transactions", receiptRoute);
+app.use("/api/payments/webhook", razorpayWebhookRoute);
+app.use("/api/receipts", receiptVerifyRoute);
+app.use("/api/receipts", receiptPdfRoute);
+
+app.use("/api/inventory", inventory);
+app.use("/api/public-transparency", transparency);
+app.use('/api', indexRouter);
 
 // CORS Configuration
 const allowedOrigins = [
@@ -33,11 +59,10 @@ app.use(cors({
   credentials: true
 }));
 
-// MongoDB Connection
-mongoose.set('strictQuery', false);
+// mongo connect
 mongoose.connect(process.env.CONNECTIONSTRING)
-  .then(() => console.log('MongoDB connected successfully.'))
-  .catch(err => console.error('MongoDB connection error:', err));
+  .then(() => console.log("MongoDB Connected"))
+  .catch(err => console.log("DB Error:", err));
 
 // Routes
 app.use('/api', indexRouter);

@@ -1,8 +1,8 @@
-import Campaign from "../models/campaign.model.js";
-import Transaction from "../models/transaction.model.js";
-import Receipt from "../models/receipt.model.js";
+const Campaign = require("../models/campaign.model.js");
+const Transaction = require("../models/Transaction.js");
+const Receipt = require("../models/receipt.model.js");
 
-export const listNGOCampaigns = async (req, res) => {
+const listNGOCampaigns = async (req, res) => {
   try {
     const campaigns = await Campaign.find(); // return all campaigns
     res.status(200).json(campaigns);
@@ -12,8 +12,7 @@ export const listNGOCampaigns = async (req, res) => {
   }
 };
 
-
-export const createCampaign = async (req, res) => {
+const createCampaign = async (req, res) => {
   try {
     const { title, description, goalAmount, startDate, endDate, bannerUrl } = req.body;
 
@@ -23,7 +22,7 @@ export const createCampaign = async (req, res) => {
       description,
       goalAmount,
       startDate,
-      endDate, 
+      endDate,
       bannerUrl
     });
 
@@ -33,7 +32,7 @@ export const createCampaign = async (req, res) => {
   }
 };
 
-export const getCampaignById = async (req, res) => {
+const getCampaignById = async (req, res) => {
   try {
     const campaign = await Campaign.findById(req.params.id);
     if (!campaign) return res.status(404).json({ message: "Campaign not found" });
@@ -44,9 +43,9 @@ export const getCampaignById = async (req, res) => {
   }
 };
 
-export const donateToCampaign = async (req, res) => {
+const donateToCampaign = async (req, res) => {
   try {
-    const { type, amount, donor, paymentProvider, paymentRef, inKindDetails } = req.body;
+    const { type, amount, donor, paymentMethod, providerRef, inKindDetails } = req.body;
 
     // Validate campaign
     const campaign = await Campaign.findById(req.params.id);
@@ -58,9 +57,9 @@ export const donateToCampaign = async (req, res) => {
     }
 
     // Financial donation validation
-    if (type === "financial" && (!amount || !paymentProvider)) {
+    if (type === "financial" && (!amount || !paymentMethod)) {
       return res.status(400).json({
-        message: "Amount & Payment Provider are required for financial donations"
+        message: "Amount & Payment Method are required for financial donations"
       });
     }
 
@@ -71,40 +70,42 @@ export const donateToCampaign = async (req, res) => {
       });
     }
 
-    // Create Transaction
-    const transaction = await Transaction.create({
-      campaignId: campaign._id,
-      ngoId: campaign.ngoId,
-      donorId: req.user?._id, // donor logged in optional
-      donorSnapshot: donor,   // store donor details
+    // Build transaction object based on type
+    const transactionData = {
       type,
-      amount: type === "financial" ? amount : 0,
-      currency: "INR",
-      inKindDetails: type === "in-kind" ? inKindDetails : undefined,
-      paymentProvider: type === "financial" ? paymentProvider : undefined,
-      paymentRef: type === "financial" ? paymentRef : undefined,
-      status: "completed",
-    });
+      donor,
+      createdAt: new Date()
+    };
 
-    // Update campaign amount only for financial donations
+    if (type === "financial") {
+      transactionData.amount = amount;
+      transactionData.paymentMethod = paymentMethod;
+      transactionData.providerRef = providerRef;
+    } else if (type === "in-kind") {
+      transactionData.items = inKindDetails.items;
+    }
+
+    // Create Transaction
+    const transaction = await Transaction.create(transactionData);
+
+    // Update campaign collected amount for financial donations
     if (type === "financial") {
       campaign.collectedAmount += amount;
       await campaign.save();
     }
 
-    // Create Receipt Document
+    // Create a simple Receipt (store transaction._id as string)
     const receipt = await Receipt.create({
       transactionId: transaction._id,
-      pdfUrl: null, // PDF generated later
+      pdfUrl: null,
       qrCodeData: null,
       verificationHash: null
     });
 
-    // Link receipt to transaction
-    transaction.receiptId = receipt._id;
+    // Link receipt to transaction as a string
+    transaction.receipt = receipt._id.toString();
     await transaction.save();
 
-    // Send response
     res.status(201).json({
       message: "Donation successful",
       transaction,
@@ -115,4 +116,11 @@ export const donateToCampaign = async (req, res) => {
     console.log(error);
     res.status(500).json({ message: "Internal Server Error" });
   }
+};
+
+module.exports = {
+  listNGOCampaigns,
+  createCampaign,
+  getCampaignById,
+  donateToCampaign
 };
