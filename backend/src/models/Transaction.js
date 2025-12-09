@@ -1,20 +1,23 @@
-// Transaction.js
-const Transaction = new Schema({
-  ngoId: { type: Schema.Types.ObjectId, ref: 'NGO', required: true },
-  donorId: { type: Schema.Types.ObjectId, ref: 'Donor' },
-  donorSnapshot: {}, // store donor name/email at time of transaction
-  type: { type: String, enum: ['financial','in-kind','service','product'], required: true },
-  amount: { type: Number, default: 0 },
-  currency: { type: String, default: 'INR' },
-  inKindDetails: {
-    items: [{ description: String, estimatedValue: Number, imageUrl: String }],
-    totalValuation: Number
-  },
-  paymentProvider: String, // Razorpay/Stripe/Manual
-  paymentRef: String,
-  campaignId: { type: Schema.Types.ObjectId, ref: 'Campaign' },
-  status: { type: String, enum: ['pending','completed','cancelled'], default: 'completed' },
-  createdAt: { type: Date, default: Date.now },
-  receiptId: { type: Schema.Types.ObjectId, ref: 'Receipt' },
-  auditHash: String
+const mongoose = require("mongoose");
+
+const ItemSchema = new mongoose.Schema({
+  description: { type: String, required: true },
+  estimatedValue: { type: Number, required: true },
+  imageUrls: [{ type: String }]
 });
+
+const TransactionSchema = new mongoose.Schema({
+  type: { type: String, required: true },          // 'financial' or 'in-kind'
+  amount: { type: Number },                        // only for financial
+  donor: {
+    name: { type: String, required: true },
+    email: { type: String, required: true },
+  },
+  paymentMethod: { type: String },                 // 'razorpay' for financial
+  providerRef: { type: String },                   // Razorpay payment ID if financial
+  items: [ItemSchema],                             // only for in-kind donations
+  receipt: { type: String },
+  createdAt: { type: Date, default: Date.now },
+});
+
+module.exports = mongoose.model("Transaction", TransactionSchema);
