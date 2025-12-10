@@ -16,6 +16,9 @@ const receiptVerifyRoute = require("./routes/receiptVerify");
 const receiptPdfRoute = require("./routes/receiptPdf");
 const inventory = require("./routes/inventoryRoutes");
 const transparency = require("./routes/publicTransparency");
+const connectDB = require("./db");
+
+
 
 dotenv.config();
 
@@ -46,16 +49,14 @@ app.use(cors({
 }));
 
 // MongoDB connection
-mongoose.connect(process.env.CONNECTIONSTRING)
-  .then(() => console.log("MongoDB Connected"))
-  .catch(err => console.log("DB Error:", err));
+connectDB();
 
 // API Routes
 app.use("/api/transactions", transactionsRoute);
 app.use("/api/transactions/in-kind", inKindTransactionsRoute);
 app.use("/api/transactions/all", allTransactionsRoute);
 app.use("/api/transactions", receiptRoute);
-app.use("/api/payments/webhook", razorpayWebhookRoute);
+app.use("/api/payments/webhook", express.raw({ type: "*/*" }), razorpayWebhookRoute);
 app.use("/api/receipts", receiptVerifyRoute);
 app.use("/api/receipts", receiptPdfRoute);
 app.use("/api/inventory", inventory);
