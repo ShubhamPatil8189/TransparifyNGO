@@ -1,9 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const upload = require("../middleware/uploadInventory");
-const { createInventoryItem, listInventory } = require("../controllers/inventoryController");
+const inventoryHandler = require("../controllers/inventoryController");
 
-router.post("/", upload.array("images"), createInventoryItem);
-router.get("/", listInventory);
+// Use the single handler for both GET and POST
+router.all("/", upload.array("images"), inventoryHandler);
 
 module.exports = router;
