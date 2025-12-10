@@ -17,13 +17,14 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen bg-background flex flex-col ">
       {/* HEADER — dashboard gradient + navbar */}
       <header
         className="sticky top-0 z-50"
         style={{
           background:
             "linear-gradient(135deg, hsl(199, 89%, 30%) 0%, hsl(160, 84%, 30%) 100%)",
+            position:'sticky'
         }}
       >
         <div className="flex items-center justify-between px-6 py-3 max-w-7xl mx-auto text-white">

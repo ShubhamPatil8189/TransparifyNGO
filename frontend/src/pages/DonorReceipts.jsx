@@ -5,6 +5,8 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import  DashboardHeader  from "@/components/layout/DashboardHeader";
+import DonorDashboard from "./DonorDashboard";
+import DonorNavbar from "@/components/layout/DonorNavbar";
 
 const receipts = [
   { id: "REC-948521", txnId: "TXN-1029384", date: "Oct 25, 2023", amount: "$250.00", project: "Clean Water Initiative", status: "Verified" },
@@ -23,7 +25,7 @@ const DonorReceipts = () => {
 
   return (
     <div className="min-h-screen bg-muted/30">
-      <DashboardHeader />
+      <DonorNavbar />
       
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <h1 className="text-3xl font-bold text-foreground mb-8">Donor Receipts</h1>

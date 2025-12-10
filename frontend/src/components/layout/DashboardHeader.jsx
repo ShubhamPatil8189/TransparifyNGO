@@ -9,29 +9,33 @@ const navItems = [
   { label: "Campaigns", path: "/campaigns" },
   { label: "Transactions", path: "/transactions" },
   { label: "Donors", path: "/donor-list" },
-  { label: "Reports", path: "/reports" },
-  { label: "About", path: "/about" },
+  { label: "Reports", path: "/home" },
+  { label: "Services", path: "/services" },
 ];
 
 export default function DashboardHeader({ title = "TransparifyNGO", subtitle = "" }) {
   const location = useLocation();
 
   return (
-    <header className="nav-header text-primary-foreground">
-      <div className="flex items-center justify-between px-6 py-3">
+    <header className="nav-header text-primary-foreground sticky top-0 z-50 w-full m-0 p-0 shadow-sm backdrop-blur-sm bg-primary">
+      {/* KEEP ALL YOUR COLORS HERE — only removed unwanted margins */}
+      <div className="flex items-center justify-between px-6 py-3 m-0">
         <div className="flex items-center gap-8">
           <Link to="/dashboard" className="flex items-center gap-2">
             <div className="w-8 h-8 bg-primary-foreground/20 rounded-lg flex items-center justify-center">
-              <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+              <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
               </svg>
             </div>
             <div>
               <span className="font-semibold text-lg">{title}</span>
-              {subtitle && <div className="text-xs text-primary-foreground/70">{subtitle}</div>}
+              {subtitle && (
+                <div className="text-xs text-primary-foreground/70">{subtitle}</div>
+              )}
             </div>
           </Link>
 
+          {/* NAV LINKS */}
           <nav className="hidden md:flex items-center gap-1">
             {navItems.map((item) => (
               <Link
@@ -49,6 +53,7 @@ export default function DashboardHeader({ title = "TransparifyNGO", subtitle = "
           </nav>
         </div>
 
+        {/* RIGHT SIDE BUTTONS */}
         <div className="flex items-center gap-4">
           <div className="relative hidden md:block">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -70,7 +75,11 @@ export default function DashboardHeader({ title = "TransparifyNGO", subtitle = "
           </div>
 
           <Link to="/login">
-            <Button variant="outline" size="sm" className="border-blue-500 text-blue-500 hover:bg-blue-500/10">
+            <Button
+              variant="outline"
+              size="sm"
+              className="border-blue-500 text-blue-500 hover:bg-blue-500/10"
+            >
               Logout
             </Button>
           </Link>

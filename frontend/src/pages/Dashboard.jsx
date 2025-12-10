@@ -8,10 +8,10 @@ import { DollarSign, Gift, Megaphone, Users } from "lucide-react";
 
 export default function Dashboard() {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background m-0 p-0">
       <DashboardHeader />
       
-      <main className="p-6">
+      <main className="p-6 pt-16"> {/* <-- add top padding so content is visible under sticky header */}
         <div className="mb-6">
           <h1 className="text-2xl font-bold">Admin Dashboard</h1>
           <p className="text-muted-foreground">NGO Financial Management & Transparency Portal</p>

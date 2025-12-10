@@ -112,6 +112,11 @@
   }
 
   body {
+    /* REMOVE browser default gap */
+    margin: 0 !important;
+    padding: 0 !important;
+
+    /* Visual theming */
     @apply bg-background text-foreground font-sans antialiased;
     font-family: 'Inter', sans-serif;
   }
@@ -159,3 +164,6 @@
     @apply bg-primary/10 text-primary;
   }
 }
+
+/* 5) Utilities or extra custom rules (if needed) */
+/* You can add any specific utility overrides here */

@@ -144,7 +144,7 @@ export default function NGODashboard() {
               <h1 className="text-3xl font-extrabold text-slate-900">Welcome back, Maria!</h1>
               <p className="text-slate-500 mt-1">Here’s what’s on your plate for today.</p>
               <div className="flex items-center gap-3 mt-6">
-                <Link to="/donation">
+                <Link to="/donor-login">
                   <button className="inline-flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg shadow">
                     <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                       <path d="M12 5v14M5 12h14" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
