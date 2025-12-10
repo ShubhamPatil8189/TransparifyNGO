@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { DashboardHeader } from "@/components/layout/DashboardHeader";
+import  DashboardHeader  from "@/components/layout/DashboardHeader";
 
 const receipts = [
   { id: "REC-948521", txnId: "TXN-1029384", date: "Oct 25, 2023", amount: "$250.00", project: "Clean Water Initiative", status: "Verified" },

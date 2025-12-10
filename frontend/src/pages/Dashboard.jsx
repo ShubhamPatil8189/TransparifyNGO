@@ -1,4 +1,4 @@
-import { DashboardHeader } from "@/components/layout/DashboardHeader";
+import DashboardHeader from "@/components/layout/DashboardHeader";
 import { StatCard } from "@/components/dashboard/StatCard";
 import { FinancialChart } from "@/components/dashboard/FinancialChart";
 import { CampaignChart } from "@/components/dashboard/CampaignChart";

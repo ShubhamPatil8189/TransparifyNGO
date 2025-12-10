@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { Search, Eye, Pencil, Copy, Plus, ChevronLeft, ChevronRight } from "lucide-react";
-import { Sidebar } from "@/components/layout/Sidebar";
+import Navbar from "@/components/layout/BeneficiariesHeader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Sidebar } from "@/components/layout/Sidebar";
 
 const beneficiaries = [
   {
@@ -35,10 +36,13 @@ export default function Beneficiaries() {
   const [searchQuery, setSearchQuery] = useState("");
 
   return (
-    <div className="min-h-screen bg-background flex">
-      <Sidebar />
-      
-      <main className="flex-1 p-6">
+    <div className="min-h-screen bg-background flex flex-col">
+      {/* Top navbar (gradient) */}
+      {/* <Sidebar/> */}
+      <Navbar />
+
+      {/* Page content */}
+      <main className="flex-1 p-6 max-w-7xl mx-auto w-full">
         {/* Breadcrumb */}
         <div className="text-sm text-muted-foreground mb-4">
           Home / <span className="text-foreground">Beneficiaries</span>
@@ -69,6 +73,7 @@ export default function Beneficiaries() {
               className="pl-10"
             />
           </div>
+
           <Select defaultValue="all">
             <SelectTrigger className="w-32">
               <SelectValue placeholder="Status" />
@@ -79,6 +84,7 @@ export default function Beneficiaries() {
               <SelectItem value="inactive">Inactive</SelectItem>
             </SelectContent>
           </Select>
+
           <Select defaultValue="all">
             <SelectTrigger className="w-36">
               <SelectValue placeholder="Program" />
@@ -90,6 +96,7 @@ export default function Beneficiaries() {
               <SelectItem value="healthcare">Healthcare Access</SelectItem>
             </SelectContent>
           </Select>
+
           <Select defaultValue="all">
             <SelectTrigger className="w-36">
               <SelectValue placeholder="Location" />
@@ -150,7 +157,7 @@ export default function Beneficiaries() {
               ))}
             </TableBody>
           </Table>
-          
+
           {/* Table Footer */}
           <div className="flex items-center justify-between px-4 py-3 border-t border-border">
             <div className="flex items-center gap-2">

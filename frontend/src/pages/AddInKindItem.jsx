@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Camera } from "lucide-react";
-import { DashboardHeader } from "@/components/layout/DashboardHeader";
+import  DashboardHeader  from "@/components/layout/DashboardHeader";
 
 const AddInKindItem = () => {
   const navigate = useNavigate();

@@ -13,7 +13,7 @@ export default function NotFound() {
               <path d="M3 3h18v18H3V3zm16 16V5H5v14h14z" />
             </svg>
           </div>
-          <span className="font-semibold">NGO Finance</span>
+          <span className="font-semibold">TransparifyNGO</span>
         </Link>
         <Link to="/dashboard">
           <Button>Dashboard</Button>

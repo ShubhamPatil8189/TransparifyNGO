@@ -31,7 +31,7 @@ export default function CreateCampaign() {
               <div className="w-8 h-8 bg-primary-foreground/20 rounded-lg flex items-center justify-center">
                 <span className="font-bold text-lg">C</span>
               </div>
-              <span className="font-semibold">ClearFund NGO</span>
+              <span className="font-semibold">TransparifyNGO</span>
             </Link>
             <nav className="hidden md:flex items-center gap-1">
               {navItems.map((item) => (

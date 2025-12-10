@@ -47,7 +47,7 @@ export default function AllCampaigns() {
       <main className="flex-1">
         {/* Breadcrumb */}
         <div className="px-6 py-4 text-sm text-muted-foreground bg-card border-b border-border">
-          Home › NGO Transparent - <span className="text-foreground">All Campaigns</span>
+          Home ›TransparifyNGO - <span className="text-foreground">All Campaigns</span>
         </div>
 
         <div className="flex">

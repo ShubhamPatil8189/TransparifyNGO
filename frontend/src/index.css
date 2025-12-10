@@ -1,9 +1,14 @@
+/* src/index.css - CORRECT ORDER */
+
+/* 1) @import (fonts) MUST be first (unless you use @charset) */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* 2) Tailwind directives next */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-
+/* 3) Your custom base styles (single @layer base block) */
 @layer base {
   :root {
     --background: 210 40% 98%;
@@ -99,10 +104,10 @@
     --sidebar-border: 217 33% 17%;
     --sidebar-ring: 217 91% 60%;
   }
-}
 
-@layer base {
+  /* small reset / global rules */
   * {
+    /* use cautiously — this applies border styles to everything */
     @apply border-border;
   }
 
@@ -112,6 +117,7 @@
   }
 }
 
+/* 4) Components layer */
 @layer components {
   .stat-card {
     @apply bg-card rounded-lg p-4 shadow-sm border border-border;

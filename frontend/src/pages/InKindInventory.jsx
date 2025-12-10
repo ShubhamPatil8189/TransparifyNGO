@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { DashboardHeader } from "@/components/layout/DashboardHeader";
+import  DashboardHeader  from "@/components/layout/DashboardHeader";
 
 const inventoryItems = [
   { id: 1, name: "50kg Rice Sacks", category: "Food & Nutrition", donor: "World Food Programme", value: "$2,500", date: "2024-01-15", status: "Available" },

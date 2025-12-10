@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Search, Info, FileText, Users, BarChart3, Settings, ChevronDown, ChevronUp, Send } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { DashboardHeader } from "@/components/layout/DashboardHeader";
+import  DashboardHeader  from "@/components/layout/DashboardHeader";
 import { cn } from "@/lib/utils";
 
 const helpTopics = [

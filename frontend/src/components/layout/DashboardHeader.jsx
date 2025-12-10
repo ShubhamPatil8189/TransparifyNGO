@@ -1,3 +1,4 @@
+import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Search, Bell, User } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -7,12 +8,12 @@ const navItems = [
   { label: "Dashboard", path: "/dashboard" },
   { label: "Campaigns", path: "/campaigns" },
   { label: "Transactions", path: "/transactions" },
-  { label: "Donors", path: "/donors" },
+  { label: "Donors", path: "/donor-list" },
   { label: "Reports", path: "/reports" },
-  { label: "Settings", path: "/settings" },
+  { label: "About", path: "/about" },
 ];
 
-export function DashboardHeader({ title = "Global Outreach Foundation", subtitle }) {
+export default function DashboardHeader({ title = "TransparifyNGO", subtitle = "" }) {
   const location = useLocation();
 
   return (
@@ -21,11 +22,14 @@ export function DashboardHeader({ title = "Global Outreach Foundation", subtitle
         <div className="flex items-center gap-8">
           <Link to="/dashboard" className="flex items-center gap-2">
             <div className="w-8 h-8 bg-primary-foreground/20 rounded-lg flex items-center justify-center">
-              <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+              <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
                 <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
               </svg>
             </div>
-            <span className="font-semibold text-lg">{title}</span>
+            <div>
+              <span className="font-semibold text-lg">{title}</span>
+              {subtitle && <div className="text-xs text-primary-foreground/70">{subtitle}</div>}
+            </div>
           </Link>
 
           <nav className="hidden md:flex items-center gap-1">
@@ -66,11 +70,7 @@ export function DashboardHeader({ title = "Global Outreach Foundation", subtitle
           </div>
 
           <Link to="/login">
-            <Button
-              variant="outline"
-              size="sm"
-              className="border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10"
-            >
+            <Button variant="outline" size="sm" className="border-blue-500 text-blue-500 hover:bg-blue-500/10">
               Logout
             </Button>
           </Link>

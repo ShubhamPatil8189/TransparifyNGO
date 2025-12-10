@@ -1,7 +1,8 @@
-import { Link } from "react-router-dom";
-import { DollarSign, Users, FileText, Heart, Shield, BarChart3, Receipt } from "lucide-react";
+import { Link, useLocation } from "react-router-dom";
+import { DollarSign, Users, FileText, Heart, ChevronRight, Shield, BarChart3, Receipt, Search, Bell, User as UserIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
-
+import { Input } from "@/components/ui/input";
+import DashboardHeader from "@/components/layout/DashboardHeader";
 const campaigns = [
   {
     title: "Clean Water for Rural Villages",
@@ -29,63 +30,90 @@ const steps = [
   { icon: Receipt, title: "3. Witness Impact.", description: "Receive updates and automated receipts." },
 ];
 
-const LandingPage = () => {
+export default function About() {
+  const location = useLocation();
+
+  const navItems = [
+    { label: "Dashboard", path: "/dashboard" },
+    { label: "Campaigns", path: "/all-campaigns" },
+    { label: "Transactions", path: "/transactions" },
+    { label: "Donors", path: "/donor-list" },
+    { label: "Reports", path: "/reports" },
+    { label: "About", path: "/landing" },
+  ];
+
   return (
     <div className="min-h-screen bg-background">
-      {/* Header — matches Index (dashboard) gradient + updated buttons */}
-      <header
-        className="sticky top-0 z-50"
+        <DashboardHeader />
+      {/* Header: matches DashboardHeader (gradient) + search */}
+      {/* <header
+        className="text-primary-foreground"
         style={{
           background:
             "linear-gradient(135deg, hsl(199, 89%, 30%) 0%, hsl(160, 84%, 30%) 100%)",
         }}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between text-white">
-          <Link to="/" className="flex items-center gap-2">
-            <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
-              <Heart className="h-6 w-6 text-white" />
+        <div className="flex items-center justify-between px-6 py-3 max-w-7xl mx-auto">
+          <div className="flex items-center gap-8">
+            <Link to="/dashboard" className="flex items-center gap-2">
+              <div className="w-8 h-8 bg-white/15 rounded-lg flex items-center justify-center">
+                <Heart className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <span className="font-semibold text-lg text-white">TransparifyNGO</span>
+                <div className="text-xs text-white/80">NGO Network</div>
+              </div>
+            </Link>
+
+            <nav className="hidden md:flex items-center gap-1">
+              {navItems.map((item) => (
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                    location.pathname === item.path
+                      ? "bg-white/12 text-white"
+                      : "text-white/80 hover:bg-white/6 hover:text-white"
+                  }`}
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </nav>
+          </div>
+
+          <div className="flex items-center gap-4">
+            {/* Search 
+            <div className="relative hidden md:block">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/70" />
+              <Input
+                placeholder="Search"
+                className="pl-10 w-64 bg-white/10 border border-white/20 text-white placeholder:text-white/60"
+              />
             </div>
-            <div>
-              <span className="font-bold text-white">TransparifyNGO</span>
-              <span className="block text-xs text-white/80">NGO Network</span>
+
+            {/* Bell 
+            <button className="w-10 h-10 flex items-center justify-center rounded-md hover:bg-white/10">
+              <Bell className="w-5 h-5 text-white" />
+            </button>
+
+            {/* User
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 bg-white/10 rounded-full flex items-center justify-center">
+                <UserIcon className="w-4 h-4 text-white" />
+              </div>
+              <span className="hidden md:block text-sm text-white">Guest</span>
             </div>
-          </Link>
 
-          <nav className="hidden md:flex items-center gap-8">
-            <Link to="/all-campaigns" className="text-white font-medium hover:text-white/80">
-              Compaign
-            </Link>
-            <Link to="/all-campaigns" className="text-white/80 hover:text-white bold">
-             About
-            </Link>
-            <Link to="/donate" className="text-white/80 hover:text-white">
-              Contact
-            </Link>
-          </nav>
-
-          <div className="flex items-center gap-3">
-            <Link to="/login">
-              <Button
-                 variant="outline"
-                size="sm"
-                className="border-blue-500 text-blue-500 hover:bg-blue-500/10"
-              >
-                Admin Login
-              </Button>
-            </Link>
-
-            <Link to="/register">
-              <Button
-                variant="outline"
-                size="sm"
-                className="border-blue-500 text-blue-500 hover:bg-blue-500/10"
-              >
-                Donate Now
+            {/* Login / Donate 
+            <Link to="/donor-login">
+              <Button variant="outline" size="sm" className="border-white text-white hover:bg-white/10">
+                Login
               </Button>
             </Link>
           </div>
         </div>
-      </header>
+      </header> */}
 
       <main>
         {/* Hero Section */}
@@ -112,8 +140,8 @@ const LandingPage = () => {
 
               <div className="relative">
                 <div className="rounded-2xl overflow-hidden shadow-2xl">
-                  <img 
-                    src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=600" 
+                  <img
+                    src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=600"
                     alt="NGO Work"
                     className="w-full h-80 object-cover"
                   />
@@ -138,7 +166,7 @@ const LandingPage = () => {
                     <h3 className="font-semibold text-lg mb-4">{campaign.title}</h3>
                     <div className="mb-2">
                       <div className="h-2 bg-muted rounded-full overflow-hidden">
-                        <div 
+                        <div
                           className="h-full bg-secondary rounded-full"
                           style={{ width: `${campaign.progress}%` }}
                         />
@@ -235,6 +263,4 @@ const LandingPage = () => {
       </footer>
     </div>
   );
-};
-
-export default LandingPage;
+}

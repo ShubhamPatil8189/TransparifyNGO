@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import { Search, Filter, Calendar, Download, Bell, HelpCircle, Lock } from "lucide-react";
+import { Link, useLocation } from "react-router-dom";
+import { Search, Filter, Calendar, Download, Bell, HelpCircle, Lock, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -8,9 +8,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 const navItems = [
   { label: "Dashboard", path: "/dashboard" },
   { label: "Transactions", path: "/transactions" },
-  { label: "Donors", path: "/donors" },
+  { label: "Donors", path: "/donor-list" },
   { label: "Reports", path: "/reports" },
-  { label: "Settings", path: "/settings" },
   { label: "Audit Logs", path: "/audit-logs", active: true },
 ];
 
@@ -59,6 +58,7 @@ const logs = [
 
 export default function AuditLogs() {
   const [searchQuery, setSearchQuery] = useState("");
+  const location = useLocation();
 
   const getActionStyle = (actionType) => {
     switch (actionType) {
@@ -79,27 +79,35 @@ export default function AuditLogs() {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      {/* Header */}
-      <header className="bg-card border-b border-border">
-        <div className="flex items-center justify-between px-6 py-3">
+
+      {/* ⭐ NEW GRADIENT HEADER (same as Dashboard) */}
+      <header
+        className="sticky top-0 z-50"
+        style={{
+          background:
+            "linear-gradient(135deg, hsl(199, 89%, 30%) 0%, hsl(160, 84%, 30%) 100%)",
+        }}
+      >
+        <div className="flex items-center justify-between px-6 py-3 text-white">
           <div className="flex items-center gap-8">
             <Link to="/" className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                <svg className="w-5 h-5 text-primary-foreground" viewBox="0 0 24 24" fill="currentColor">
+              <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center">
+                <svg className="w-5 h-5 text-white" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M3 3h18v18H3V3zm16 16V5H5v14h14z" />
                 </svg>
               </div>
-              <span className="font-semibold">NGO Finance</span>
+              <span className="font-semibold text-lg">NGO Finance</span>
             </Link>
+
             <nav className="hidden md:flex items-center gap-1">
               {navItems.map((item) => (
                 <Link
                   key={item.path}
                   to={item.path}
                   className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                    item.active
-                      ? "text-primary"
-                      : "text-muted-foreground hover:text-foreground"
+                    location.pathname === item.path
+                      ? "bg-white/20 text-white"
+                      : "text-white/80 hover:bg-white/10 hover:text-white"
                   }`}
                 >
                   {item.label}
@@ -107,22 +115,32 @@ export default function AuditLogs() {
               ))}
             </nav>
           </div>
-          <div className="flex items-center gap-3">
+
+          <div className="flex items-center gap-4">
             <Link to="/help">
-              <Button variant="outline" size="sm" className="text-primary">
+              <Button
+                variant="outline"
+                size="sm"
+                className="border-blue-500 text-blue-500 hover:bg-blue-500/10"
+              >
                 Help
               </Button>
             </Link>
-            <Button variant="ghost" size="icon">
-              <Bell className="w-5 h-5" />
-            </Button>
-            <div className="w-8 h-8 bg-success rounded-full" />
+
+            <button className="w-10 h-10 flex items-center justify-center rounded-md hover:bg-white/10">
+              <Bell className="w-5 h-5 text-white" />
+            </button>
+
+            <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
+              <User className="w-4 h-4 text-white" />
+            </div>
           </div>
         </div>
       </header>
 
       {/* Main Content */}
       <main className="flex-1 p-6">
+
         <div className="mb-6">
           <div className="flex items-center gap-2 mb-2">
             <Lock className="w-5 h-5 text-muted-foreground" />
@@ -144,18 +162,19 @@ export default function AuditLogs() {
               className="pl-10"
             />
           </div>
+
           <Button variant="outline" size="sm">
-            <Filter className="w-4 h-4 mr-2" />
-            Filter
+            <Filter className="w-4 h-4 mr-2" /> Filter
           </Button>
+
           <Button variant="outline" size="sm">
-            <Calendar className="w-4 h-4 mr-2" />
-            Date Range
+            <Calendar className="w-4 h-4 mr-2" /> Date Range
           </Button>
+
           <div className="flex-1" />
+
           <Button className="bg-primary">
-            <Download className="w-4 h-4 mr-2" />
-            Export Logs
+            <Download className="w-4 h-4 mr-2" /> Export Logs
           </Button>
         </div>
 
@@ -171,16 +190,23 @@ export default function AuditLogs() {
                 <TableHead>Hash</TableHead>
               </TableRow>
             </TableHeader>
+
             <TableBody>
               {logs.map((log, index) => (
                 <TableRow key={index}>
                   <TableCell className="text-sm text-muted-foreground">{log.timestamp}</TableCell>
                   <TableCell className="text-sm">{log.user}</TableCell>
+
                   <TableCell>
-                    <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${getActionStyle(log.actionType)}`}>
+                    <span
+                      className={`px-2.5 py-1 rounded-full text-xs font-medium ${getActionStyle(
+                        log.actionType
+                      )}`}
+                    >
                       {log.action}
                     </span>
                   </TableCell>
+
                   <TableCell className="text-sm">{log.resource}</TableCell>
                   <TableCell className="text-sm text-muted-foreground font-mono">{log.hash}</TableCell>
                 </TableRow>
@@ -191,25 +217,18 @@ export default function AuditLogs() {
 
         {/* Pagination */}
         <div className="flex items-center justify-center gap-2 mt-6">
-          <Button variant="outline" size="icon" disabled>
-            <span className="sr-only">Previous</span>
-            ‹
-          </Button>
+          <Button variant="outline" size="icon" disabled>‹</Button>
           <Button size="sm" className="bg-primary">1</Button>
           <Button variant="outline" size="sm">2</Button>
           <Button variant="outline" size="sm">3</Button>
           <span className="text-muted-foreground">...</span>
           <Button variant="outline" size="sm">10</Button>
-          <Button variant="outline" size="icon">
-            <span className="sr-only">Next</span>
-            ›
-          </Button>
+          <Button variant="outline" size="icon">›</Button>
         </div>
       </main>
 
-      {/* Footer */}
       <footer className="py-4 px-6 text-center text-sm text-muted-foreground border-t border-border">
-        © 2024 NGO Finance. All rights reserved. | 
+        © 2024 NGO Finance. | 
         <Link to="/support" className="text-primary hover:underline ml-1">Support</Link>
       </footer>
     </div>
