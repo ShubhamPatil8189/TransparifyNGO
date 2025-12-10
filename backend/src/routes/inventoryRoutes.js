@@ -1,19 +1,16 @@
-// routes/inventoryRoutes.js
 const express = require("express");
 const router = express.Router();
-const { listInventory,createInventoryItem } = require("../controllers/inventoryController");
-// const { isAdmin } = require("../middlewares/authMiddleware");
+const inventoryController = require("../controllers/inventoryController");
+const upload = require("../middleware/uploadInventory.js");
 
-// For file upload (optional)
-// const upload = require("../middlewares/uploadMiddleware");
-
+// POST with file upload
 router.post(
   "/",
-  // upload.array("images"),   // only if using file upload
-  createInventoryItem
+  upload.array("images", 10),   // handle up to 10 images
+  inventoryController.createInventoryItem
 );
 
-// Anyone can list all items
-router.get("/", listInventory);
+// GET all items
+router.get("/", inventoryController.listInventory);
 
 module.exports = router;

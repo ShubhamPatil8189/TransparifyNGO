@@ -64,11 +64,12 @@ mongoose.connect(process.env.CONNECTIONSTRING)
   .then(() => console.log("MongoDB Connected"))
   .catch(err => console.log("DB Error:", err));
 
+
 // Routes
 app.use('/api', indexRouter);
 
 // Start Server
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
