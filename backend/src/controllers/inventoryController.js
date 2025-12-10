@@ -1,24 +1,52 @@
-
-// controllers/inventoryController.js
 const Inventory = require("../models/Inventory");
-const path = require("path");
+const cloudinary = require("cloudinary").v2;
+
+/** Cloudinary Config **/
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
+/**
+ * Upload buffer to Cloudinary
+ */
+const uploadToCloudinary = (fileBuffer, folder) => {
+  return new Promise((resolve, reject) => {
+    const uploadStream = cloudinary.uploader.upload_stream(
+      {
+        folder,
+      },
+      (error, result) => {
+        if (error) reject(error);
+        else resolve(result.secure_url);
+      }
+    );
+
+    uploadStream.end(fileBuffer);
+  });
+};
 
 
-// POST /api/inventory
+/**
+ * CREATE Inventory Item
+ * POST /api/inventory
+ */
 exports.createInventoryItem = async (req, res) => {
   try {
     const { description, estimatedValue, donor } = req.body;
 
     let images = [];
 
-    // ✔ If actual image files uploaded using multer
+    // ✔ Upload files to Cloudinary (req.files from multer.memoryStorage())
     if (req.files && req.files.length > 0) {
-      images = req.files.map(file =>
-        `/uploads/inventory/${file.filename}`
-      );
+      for (const file of req.files) {
+        const url = await uploadToCloudinary(file.buffer, "inventory");
+        images.push(url);
+      }
     }
 
-    // ✔ If URLs are provided along with files
+    // ✔ If URLs are also provided manually
     if (req.body.images && Array.isArray(req.body.images)) {
       images = images.concat(req.body.images);
     }
@@ -45,7 +73,7 @@ exports.createInventoryItem = async (req, res) => {
 
 
 /**
- * List All Inventory Items
+ * LIST Inventory Items
  * GET /api/inventory
  */
 exports.listInventory = async (req, res) => {
@@ -62,8 +90,6 @@ exports.listInventory = async (req, res) => {
     res.status(500).json({ error: "Server error while fetching inventory" });
   }
 };
-
-
 
 
 // // controllers/inventoryController.js
