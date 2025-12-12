@@ -7,7 +7,7 @@ const Transaction = require("../models/Transaction");
 exports.getTransactionReceipt = async (req, res) => {
   try {
     const id = req.params.id;
-    const transaction = await Transaction.findById(id);
+    const transaction = await Transaction.findOne({ receipt: id });
 
     if (!transaction) {
       return res.status(404).json({ message: "Transaction not found" });
@@ -127,12 +127,15 @@ exports.getTransactionReceipt = async (req, res) => {
 
     const fileUrl = `${req.protocol}://${req.get("host")}/receipts/${receiptFile}`;
 
-    res.status(200).json({
-      success: true,
-      receiptLink: fileUrl,
-      verifyQR: verifyUrl,
-      message: "Advanced receipt generated successfully",
-    });
+    // res.status(200).json({
+    //   success: true,
+    //   receiptLink: fileUrl,
+    //   verifyQR: verifyUrl,
+    //   message: "Advanced receipt generated successfully",
+    // });
+
+    return res.redirect(fileUrl);
+
 
   } catch (err) {
     console.error(err);

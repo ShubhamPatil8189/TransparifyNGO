@@ -1,23 +1,10 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Shield, Heart, Award, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import DonorNavbar from "@/components/layout/DonorNavbar";
 import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, Tooltip } from "recharts";
-
-const timelineData = [
-  { month: "Jan", amount: 500 },
-  { month: "Mar", amount: 1000 },
-  { month: "Jun", amount: 2500 },
-  { month: "Sep", amount: 1500 },
-  { month: "Dec", amount: 3000 },
-];
-
-const donations = [
-  { date: "Dec 15, 2023", ngo: "Clean Water Initiative", project: "Well Drilling in Kenya", amount: "$3,000", status: "Completed" },
-  { date: "Nov 20, 2023", ngo: "Education for All", project: "School Supplies", amount: "$500", status: "Completed" },
-  { date: "Oct 10, 2023", ngo: "Disaster Relief Fund", project: "Emergency Aid", amount: "$1,000", status: "Completed" },
-];
 
 const badges = [
   { icon: Shield, label: "Champion Donor", color: "bg-primary" },
@@ -26,21 +13,57 @@ const badges = [
 ];
 
 const DonorDashboard = () => {
+  const [timelineData, setTimelineData] = useState([]);
+  const [donations, setDonations] = useState([]);
+  const [totalDonated, setTotalDonated] = useState(0);
+  const [totalCount, setTotalCount] = useState(0);
+  const [userName, setUserName] = useState("");
+
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        const res = await fetch("http://localhost:4000/api/user/me", {
+          method: "GET",
+          credentials: "include", // Important: sends cookies (JWT) with request
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          // Example response: { name, timeline, donations, totalDonated, totalCount }
+          setUserName(data.name);
+          setTimelineData(data.timeline || []);
+          setDonations(data.donations || []);
+          setTotalDonated(data.totalDonated || 0);
+          setTotalCount(data.totalCount || 0);
+        } else {
+          console.error("Failed to fetch dashboard data:", data.message);
+        }
+      } catch (error) {
+        console.error("Error fetching dashboard data:", error);
+      }
+    };
+
+    fetchDashboardData();
+  }, []);
+
   return (
     <div className="min-h-screen bg-muted/30">
-
-      {/* Reusable Navbar */}
+      {/* Navbar */}
       <DonorNavbar />
 
       {/* Hero Section */}
       <section
         className="py-12 text-white"
         style={{
-  background: "linear-gradient(135deg, hsl(160, 85%, 35%) 0%, hsl(120, 70%, 55%) 100%)"
-}}
+          background: "linear-gradient(135deg, hsl(160, 85%, 35%) 0%, hsl(120, 70%, 55%) 100%)"
+        }}
       >
         <div className="max-w-7xl mx-auto px-4">
-          <h1 className="text-3xl font-bold mb-2">Welcome back, Sarah!</h1>
+          <h1 className="text-3xl font-bold mb-2">Welcome back, {userName || "Donor"}!</h1>
           <p className="text-white/80">Your generosity is making a difference.</p>
 
           <div className="flex items-center gap-8 mt-8">
@@ -61,24 +84,18 @@ const DonorDashboard = () => {
             <div className="flex gap-4 ml-auto">
               <div className="bg-white/10 backdrop-blur px-6 py-4 rounded-lg text-center">
                 <div className="text-sm text-white/70">Total Donated</div>
-                <div className="text-3xl font-bold">$12,500</div>
+                <div className="text-3xl font-bold">${totalDonated}</div>
               </div>
               <div className="bg-white/10 backdrop-blur px-6 py-4 rounded-lg text-center">
                 <div className="text-sm text-white/70">Donations</div>
-                <div className="text-3xl font-bold">24</div>
+                <div className="text-3xl font-bold">{totalCount}</div>
               </div>
-
-              {/* <Button variant="outline"
-              size="sm"
-              className="border-blue-500 text-blue-500 hover:bg-blue-500/10">
-                Quick Donate
-              </Button> */}
             </div>
           </div>
         </div>
       </section>
 
-      {/* MAIN */}
+      {/* Main */}
       <main className="max-w-7xl mx-auto px-4 py-8">
         {/* Impact Timeline */}
         <div className="bg-card rounded-lg p-6 mb-8">
@@ -127,10 +144,12 @@ const DonorDashboard = () => {
                   <td className="py-4">{item.project}</td>
                   <td className="py-4 font-medium">{item.amount}</td>
                   <td className="py-4">
-                    <Badge className="bg-green-100 text-green-700">Completed</Badge>
+                    <Badge className={item.status === "Completed" ? "bg-green-100 text-green-700" : "bg-yellow-100 text-yellow-700"}>
+                      {item.status}
+                    </Badge>
                   </td>
                   <td className="py-4">
-                    <Button variant="link" className="p-0 text-primary">
+                    <Button variant="link" className="p-0 text-primary" onClick={() => window.open(item.receiptUrl, "_blank")}>
                       <Download className="h-4 w-4 inline-block mr-1" />
                       Download PDF
                     </Button>
@@ -142,7 +161,7 @@ const DonorDashboard = () => {
         </div>
       </main>
 
-      {/* FOOTER */}
+      {/* Footer */}
       <footer className="bg-muted mt-12 py-6">
         <div className="max-w-7xl mx-auto px-4 flex justify-center gap-8 text-sm text-muted-foreground">
           <Link to="/about">About</Link>

@@ -86,7 +86,7 @@ const LandingPage = () => {
                 size="sm"
                 className="border-blue-500 text-blue-500 hover:bg-blue-500/10"
               >
-                Admin Login
+                Login
               </Button>
             </Link>
 

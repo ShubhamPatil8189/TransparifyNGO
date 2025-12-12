@@ -1,39 +1,8 @@
-// TransactionsList.jsx (with DashboardHeader)
-import React from "react";
+// TransactionsList.jsx
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import DashboardHeader from "@/components/layout/DashboardHeader"; 
+import DashboardHeader from "@/components/layout/DashboardHeader";
 
-const rows = [
-  {
-    donor: "Global Fund for Nature",
-    value: "$15,000.00",
-    paymentId: "PAY-892103",
-    status: "Completed (Financial)",
-    receipt: true,
-    hash: "0xabc123...",
-    date: "Oct 26, 2024",
-  },
-  {
-    donor: "Acme Corp.",
-    value: "Computer Equipment ($5,000)",
-    paymentId: "INKIND-456789",
-    status: "Received (In-Kind)",
-    receipt: true,
-    hash: "0xdef456...",
-    date: "Oct 25, 2024",
-  },
-  {
-    donor: "Anonymous Donor",
-    value: "$250.00",
-    paymentId: "PAY-987654",
-    status: "Pending",
-    receipt: false,
-    hash: null,
-    date: "Oct 24, 2024",
-  },
-];
-
-// Inline SVG Icons
 const EyeIcon = ({ className = "w-5 h-5 inline-block" }) => (
   <svg
     className={className}
@@ -78,79 +47,121 @@ const ChevronRightIcon = ({ className = "w-4 h-4 inline-block" }) => (
 );
 
 export default function TransactionsList() {
+  const [transactions, setTransactions] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch("http://localhost:5000/api/transactions/all")
+      .then((res) => res.json())
+      .then((data) => {
+        setTransactions(data.transactions || []);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Error fetching transactions:", err);
+        setLoading(false);
+      });
+  }, []);
+
+  const formatDate = (dateStr) =>
+    new Date(dateStr).toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    });
+
+  const calculateTotalValue = (items) =>
+    items.reduce((sum, item) => sum + (item.estimatedValue || 0), 0);
+
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      
-      {/* TOP DASHBOARD HEADER */}
       <DashboardHeader />
 
-      {/* MAIN CONTENT */}
       <main className="flex-1 p-6 max-w-7xl mx-auto w-full">
         <h1 className="text-2xl font-semibold mb-4">Transactions</h1>
 
         <div className="bg-card border rounded-lg mt-4 p-4">
-          {/* TABLE */}
-          <table className="w-full">
-            <thead className="bg-muted/40">
-              <tr>
-                <th className="px-4 py-2 text-left">Donor</th>
-                <th className="px-4 py-2 text-left">Value</th>
-                <th className="px-4 py-2 text-left">Payment ID</th>
-                <th className="px-4 py-2 text-left">Status</th>
-                <th className="px-4 py-2 text-left">Receipt</th>
-                <th className="px-4 py-2 text-left">Date</th>
-                <th className="px-4 py-2 text-center">Actions</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {rows.map((r, i) => (
-                <tr key={i} className="border-b">
-                  <td className="px-4 py-3">{r.donor}</td>
-                  <td className="px-4 py-3">{r.value}</td>
-                  <td className="px-4 py-3">{r.paymentId}</td>
-                  <td className="px-4 py-3">{r.status}</td>
-                  <td className="px-4 py-3">
-                    {r.receipt ? (
-                      <a className="text-blue-600 underline cursor-pointer">
-                        Download PDF
-                      </a>
-                    ) : (
-                      "-"
-                    )}
-                  </td>
-                  <td className="px-4 py-3">{r.date}</td>
-
-                  {/* ACTIONS */}
-                  <td className="px-4 py-3 text-center">
-                    <Link
-                      to={`/transactions/details/${r.paymentId}`}
-                      className="p-2 rounded-md border hover:bg-muted"
-                    >
-                      <EyeIcon />
-                    </Link>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-
-          {/* PAGINATION */}
-          <div className="flex items-center justify-between px-6 py-4 text-sm">
-            <div>Showing 1–6 of 128 items</div>
-
-            <div className="flex items-center gap-2">
-              <button className="p-2 border rounded-md">
-                <ChevronLeftIcon />
-              </button>
-
-              <div className="px-3 py-1 border rounded-md">1</div>
-
-              <button className="p-2 border rounded-md">
-                <ChevronRightIcon />
-              </button>
+          {loading ? (
+            <div className="text-center py-10 text-muted-foreground">
+              Loading transactions...
             </div>
-          </div>
+          ) : (
+            <>
+              <table className="w-full">
+                <thead className="bg-muted/40">
+                  <tr>
+                    <th className="px-4 py-2 text-left">Donor</th>
+                    <th className="px-4 py-2 text-left">Value</th>
+                    <th className="px-4 py-2 text-left">Payment ID</th>
+                    <th className="px-4 py-2 text-left">Status</th>
+                    <th className="px-4 py-2 text-left">Receipt</th>
+                    <th className="px-4 py-2 text-left">Date</th>
+                    <th className="px-4 py-2 text-center">Actions</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {transactions.map((t) => {
+                    const totalValue = calculateTotalValue(t.items);
+                    const valueText = `₹${totalValue} (In-kind)`;
+
+                    return (
+                      <tr key={t._id} className="border-b">
+                        <td className="px-4 py-3">{t.donor?.name}</td>
+
+                        <td className="px-4 py-3">{valueText}</td>
+
+                        <td className="px-4 py-3">{t.receipt}</td>
+
+                        <td className="px-4 py-3">Received (In-kind)</td>
+
+                        <td className="px-4 py-3">
+                          <a
+                         
+                            href={`http://localhost:5000/api/transactions/${t.receipt}/receipt`}
+                            target="_blank"
+                            className="text-blue-600 underline cursor-pointer"
+                          >
+                            Download PDF
+                          </a>
+                        </td>
+
+                        <td className="px-4 py-3">{formatDate(t.createdAt)}</td>
+
+                        <td className="px-4 py-3 text-center">
+                          <Link
+                            to={`/transactions/details/${t._id}`}
+                            className="p-2 rounded-md border hover:bg-muted"
+                          >
+                            <EyeIcon />
+                          </Link>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+
+              {/* PAGINATION (static for now) */}
+              <div className="flex items-center justify-between px-6 py-4 text-sm">
+                <div>
+                  Showing {transactions.length} of {transactions.length} items
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <button className="p-2 border rounded-md">
+                    <ChevronLeftIcon />
+                  </button>
+
+                  <div className="px-3 py-1 border rounded-md">1</div>
+
+                  <button className="p-2 border rounded-md">
+                    <ChevronRightIcon />
+                  </button>
+                </div>
+              </div>
+            </>
+          )}
         </div>
       </main>
     </div>

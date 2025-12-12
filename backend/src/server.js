@@ -3,46 +3,31 @@ const cors = require("cors");
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
 const cookieParser = require('cookie-parser');
-const indexRouter = require('../src/routes/index.js');
+const path = require("path");
 
+const indexRouter = require('../src/routes/index.js');
 const razorpayWebhookRoute = require("./routes/razorpayWebhook");
 const inKindTransactionsRoute = require("./routes/inKindTransactions");
 const transactionsRoute = require("./routes/transactions");
 const allTransactionsRoute = require("./routes/allTransactions");
-const path = require("path");
 const receiptRoute = require("./routes/receipt");
 const receiptVerifyRoute = require("./routes/receiptVerify");
 const receiptPdfRoute = require("./routes/receiptPdf");
-const inventory=require("./routes/inventoryRoutes");
-const transparency=require("./routes/publicTransparency");
+const inventory = require("./routes/inventoryRoutes");
+const transparency = require("./routes/publicTransparency");
 
 dotenv.config();
 
 const app = express();
-app.use(express.json());
-app.use(cookieParser());
-// Middleware
-app.use(express.json());
-app.use("/receipts", express.static(path.join(__dirname, "receipts")));
 
-
-// Routes
-app.use("/api/transactions", transactionsRoute);
-app.use("/api/transactions/in-kind", inKindTransactionsRoute);
-app.use("/api/transactions/all", allTransactionsRoute);
-app.use("/api/transactions", receiptRoute);
-app.use("/api/payments/webhook", razorpayWebhookRoute);
-app.use("/api/receipts", receiptVerifyRoute);
-app.use("/api/receipts", receiptPdfRoute);
-
-app.use("/api/inventory", inventory);
-app.use("/api/public-transparency", transparency);
-app.use('/api', indexRouter);
-
-// CORS Configuration
+// --------------------
+// CORS MUST BE FIRST
+// --------------------
 const allowedOrigins = [
+  'http://localhost:5173',
   'http://localhost:4000',
-  'http://localhost:5000'
+  'http://localhost:5000',
+  'http://localhost:8080',
 ];
 
 app.use(cors({
@@ -59,21 +44,32 @@ app.use(cors({
   credentials: true
 }));
 
-app.use('/',(req,res)=>{
-  res.json("Root");
-})
+// --------------------
+// Middlewares
+// --------------------
+app.use(express.json());
+app.use(cookieParser());
+app.use("/receipts", express.static(path.join(__dirname, "receipts")));
 
-// mongo connect
-mongoose.connect(process.env.CONNECTIONSTRING)
+// --------------------
+// Routes
+// --------------------
+app.use('/api', indexRouter);
+app.use("/api/transactions", transactionsRoute);
+app.use("/api/transactions/in-kind", inKindTransactionsRoute);
+app.use("/api/transactions/all", allTransactionsRoute);
+app.use("/api/transactions", receiptRoute);
+app.use("/api/payments/webhook", razorpayWebhookRoute);
+app.use("/api/receipts", receiptVerifyRoute);
+app.use("/api/receipts", receiptPdfRoute);
+app.use("/api/inventory", inventory);
+app.use("/api/public-transparency", transparency);
+
+// MongoDB
+mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB Connected"))
   .catch(err => console.log("DB Error:", err));
 
-
-// Routes
-app.use('/api', indexRouter);
-
-// Start Server
+// Start server
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

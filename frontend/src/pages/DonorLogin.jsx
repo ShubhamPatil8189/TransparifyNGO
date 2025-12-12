@@ -11,10 +11,34 @@ const DonorLogin = () => {
   const navigate = useNavigate();
 
   // <-- removed TypeScript type annotation here
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    navigate("/donor-dashboard");
-  };
+  const API_BASE_URL = "http://localhost:4000";
+
+const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  try {
+    const res = await fetch(`${API_BASE_URL}/api/auth/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+      credentials: "include",
+    });
+
+    const data = await res.json();
+
+    if (res.ok) {
+      // Save token if needed
+      navigate("/donor-dashboard");
+    } else {
+      alert(data.message || "Login failed");
+    }
+  } catch (err) {
+    console.error(err);
+    alert("Failed to fetch. Check backend URL and CORS.");
+  }
+};
+
+
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-b from-primary/5 to-background">
@@ -78,7 +102,7 @@ const DonorLogin = () => {
 
               <p className="text-center text-muted-foreground">
                 New Donor?{" "}
-                <Link to="/register" className="text-primary font-medium hover:underline">
+                <Link to="/donor-register" className="text-primary font-medium hover:underline">
                   Register Here
                 </Link>
               </p>
