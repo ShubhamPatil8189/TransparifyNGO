@@ -30,6 +30,7 @@ import TransactionDetails from "./pages/TransactionDetails";
 import NGODashboard from "./pages/NGODashboard";
 import DonorsList from "./pages/DonorsList";
 import About from "./pages/About";
+import DonorReg from "./pages/DonorRegister";
 import AdminServices from "./pages/services/AdminService";
 const queryClient = new QueryClient();
 
@@ -54,7 +55,6 @@ const App = () => {
             <Route path="/campaign/:id" element={<CampaignDetail />} />
             <Route path="/donation/:id" element={<DonationDetails />} />
             <Route path="/transactions/details/:id" element={<TransactionDetails />} />
-            <Route path="/register" element={<DonorRegistration />} />
             <Route path="/donor-login" element={<DonorLogin />} />
             <Route path="/donor-dashboard" element={<DonorDashboard />} />
             <Route path="/donor-receipts" element={<DonorReceipts />} />
@@ -73,6 +73,7 @@ const App = () => {
             <Route path="/donor-list" element={<DonorsList />} />
             <Route path="*" element={<NotFound />} />
             <Route path="services" element={<AdminServices/>}/>
+            <Route path="/donor-register" element={<DonorReg/>}/>
           </Routes>
         </BrowserRouter>
       </TooltipProvider>
