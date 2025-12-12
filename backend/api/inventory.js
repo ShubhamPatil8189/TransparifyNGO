@@ -1,6 +1,6 @@
 const express = require("express");
 const serverless = require("serverless-http");
-const inventoryRoutes = require("../../routes/inventoryRoutes");
+const inventoryRoutes = require("../src/routes/inventoryRoutes");
 
 const app = express();
 app.use(express.json());

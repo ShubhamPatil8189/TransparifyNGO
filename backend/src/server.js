@@ -42,7 +42,8 @@ app.use('/api', indexRouter);
 // CORS Configuration
 const allowedOrigins = [
   'http://localhost:4000',
-  'http://localhost:5000'
+  'http://localhost:5000',
+  'http://localhost:8080'
 ];
 
 app.use(cors({
