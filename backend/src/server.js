@@ -59,6 +59,10 @@ app.use(cors({
   credentials: true
 }));
 
+app.use('/',(req,res)=>{
+  res.json("Root");
+})
+
 // mongo connect
 mongoose.connect(process.env.CONNECTIONSTRING)
   .then(() => console.log("MongoDB Connected"))
