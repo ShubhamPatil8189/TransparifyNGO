@@ -436,9 +436,10 @@ export default function Donate() {
                             ₹{c.collectedAmount?.toLocaleString() || '0'}
                           </span>
                         </div>
-                        <span className="text-gray-500 font-medium">
+                        <span className="text-gray-500 font-medium mb-3">
                           of ₹{c.goalAmount?.toLocaleString() || '0'}
                         </span>
+
                       </div>
 
                       {/* Progress Bar */}
