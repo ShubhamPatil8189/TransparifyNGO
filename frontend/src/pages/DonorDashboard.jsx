@@ -1,10 +1,15 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { Shield, Heart, Award, Download } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import DonorNavbar from "@/components/layout/DonorNavbar";
-import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, Tooltip } from "recharts";
+import { Shield, Heart, Award } from "lucide-react";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  ResponsiveContainer,
+  Tooltip,
+} from "recharts";
+import { Badge } from "@/components/ui/badge";
 
 const badges = [
   { icon: Shield, label: "Champion Donor", color: "bg-primary" },
@@ -21,29 +26,17 @@ const DonorDashboard = () => {
 
   useEffect(() => {
     const fetchDashboardData = async () => {
-      try {
-        const res = await fetch("http://localhost:4000/api/user/me", {
-          method: "GET",
-          credentials: "include", // Important: sends cookies (JWT) with request
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
+      const res = await fetch("http://localhost:4000/api/user/me", {
+        credentials: "include",
+      });
+      const data = await res.json();
 
-        const data = await res.json();
-
-        if (res.ok) {
-          // Example response: { name, timeline, donations, totalDonated, totalCount }
-          setUserName(data.name);
-          setTimelineData(data.timeline || []);
-          setDonations(data.donations || []);
-          setTotalDonated(data.totalDonated || 0);
-          setTotalCount(data.totalCount || 0);
-        } else {
-          console.error("Failed to fetch dashboard data:", data.message);
-        }
-      } catch (error) {
-        console.error("Error fetching dashboard data:", error);
+      if (res.ok) {
+        setUserName(data.name);
+        setTimelineData(data.timeline || []);
+        setDonations(data.donations || []);
+        setTotalDonated(data.totalDonated || 0);
+        setTotalCount(data.totalCount || 0);
       }
     };
 
@@ -53,43 +46,48 @@ const DonorDashboard = () => {
   return (
     <div className="min-h-screen bg-muted/30">
       {/* Navbar */}
-      <DonorNavbar />
+      <DonorNavbar userName={userName} />
 
-      {/* Hero Section */}
+      {/* Hero */}
       <section
-        className="py-12 text-white"
+        className="py-10 text-white"
         style={{
-          background: "linear-gradient(135deg, hsl(160, 85%, 35%) 0%, hsl(120, 70%, 55%) 100%)"
+          background:
+            "linear-gradient(135deg, hsl(160, 85%, 35%) 0%, hsl(120, 70%, 55%) 100%)",
         }}
       >
         <div className="max-w-7xl mx-auto px-4">
-          <h1 className="text-3xl font-bold mb-2">Welcome back, {userName || "Donor"}!</h1>
-          <p className="text-white/80">Your generosity is making a difference.</p>
+          <h1 className="text-3xl font-bold mb-2">
+            Welcome back, {userName || "Donor"} 👋
+          </h1>
+          <p className="text-white/80">
+            Your generosity is making a difference.
+          </p>
 
-          <div className="flex items-center gap-8 mt-8">
-            <div className="flex gap-4">
-              {badges.map((badge, index) => {
-                const Icon = badge.icon;
-                return (
-                  <div key={index} className="flex flex-col items-center">
-                    <div className={`${badge.color} w-16 h-16 rounded-full flex items-center justify-center mb-2`}>
-                      <Icon className="h-8 w-8 text-white" />
-                    </div>
-                    <span className="text-sm text-center">{badge.label}</span>
+          <div className="flex gap-4 mt-6">
+            {badges.map((badge, i) => {
+              const Icon = badge.icon;
+              return (
+                <div key={i} className="flex flex-col items-center">
+                  <div
+                    className={`${badge.color} w-14 h-14 rounded-full flex items-center justify-center`}
+                  >
+                    <Icon className="h-7 w-7 text-white" />
                   </div>
-                );
-              })}
-            </div>
+                  <span className="text-sm mt-1">{badge.label}</span>
+                </div>
+              );
+            })}
+          </div>
 
-            <div className="flex gap-4 ml-auto">
-              <div className="bg-white/10 backdrop-blur px-6 py-4 rounded-lg text-center">
-                <div className="text-sm text-white/70">Total Donated</div>
-                <div className="text-3xl font-bold">${totalDonated}</div>
-              </div>
-              <div className="bg-white/10 backdrop-blur px-6 py-4 rounded-lg text-center">
-                <div className="text-sm text-white/70">Donations</div>
-                <div className="text-3xl font-bold">{totalCount}</div>
-              </div>
+          <div className="flex gap-6 mt-8">
+            <div className="bg-white/10 px-6 py-4 rounded-lg text-center">
+              <div className="text-sm text-white/70">Total Donated</div>
+              <div className="text-3xl font-bold">₹{totalDonated}</div>
+            </div>
+            <div className="bg-white/10 px-6 py-4 rounded-lg text-center">
+              <div className="text-sm text-white/70">Donations</div>
+              <div className="text-3xl font-bold">{totalCount}</div>
             </div>
           </div>
         </div>
@@ -97,18 +95,14 @@ const DonorDashboard = () => {
 
       {/* Main */}
       <main className="max-w-7xl mx-auto px-4 py-8">
-        {/* Impact Timeline */}
+        {/* Timeline */}
         <div className="bg-card rounded-lg p-6 mb-8">
           <h2 className="text-xl font-bold mb-2">Your Impact Timeline</h2>
-          <p className="text-muted-foreground text-sm mb-4">
-            Donation amounts over the past year
-          </p>
-
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={timelineData}>
-                <XAxis dataKey="month" axisLine={false} tickLine={false} />
-                <YAxis axisLine={false} tickLine={false} />
+                <XAxis dataKey="month" />
+                <YAxis />
                 <Tooltip />
                 <Line
                   type="monotone"
@@ -121,38 +115,39 @@ const DonorDashboard = () => {
           </div>
         </div>
 
-        {/* Recent Donations */}
+        {/* Donations */}
         <div className="bg-card rounded-lg p-6">
-          <h2 className="text-xl font-bold mb-4">Recent Donation History</h2>
+          <h2 className="text-xl font-bold mb-4">
+            Recent Donation History
+          </h2>
 
           <table className="w-full">
             <thead>
               <tr className="border-b">
-                <th className="text-left py-3">Date</th>
-                <th className="text-left py-3">NGO</th>
-                <th className="text-left py-3">Project</th>
-                <th className="text-left py-3">Amount</th>
-                <th className="text-left py-3">Status</th>
-                <th className="text-left py-3">Receipt</th>
+                <th>Date</th>
+                <th>NGO</th>
+                <th>Project</th>
+                <th>Amount</th>
+                <th>Status</th>
               </tr>
             </thead>
             <tbody>
               {donations.map((item, i) => (
                 <tr key={i} className="border-b">
-                  <td className="py-4">{item.date}</td>
-                  <td className="py-4">{item.ngo}</td>
-                  <td className="py-4">{item.project}</td>
-                  <td className="py-4 font-medium">{item.amount}</td>
-                  <td className="py-4">
-                    <Badge className={item.status === "Completed" ? "bg-green-100 text-green-700" : "bg-yellow-100 text-yellow-700"}>
+                  <td>{item.date}</td>
+                  <td>{item.ngo}</td>
+                  <td>{item.project}</td>
+                  <td className="font-medium">{item.amount}</td>
+                  <td>
+                    <Badge
+                      className={
+                        item.status === "Completed"
+                          ? "bg-green-100 text-green-700"
+                          : "bg-yellow-100 text-yellow-700"
+                      }
+                    >
                       {item.status}
                     </Badge>
-                  </td>
-                  <td className="py-4">
-                    <Button variant="link" className="p-0 text-primary" onClick={() => window.open(item.receiptUrl, "_blank")}>
-                      <Download className="h-4 w-4 inline-block mr-1" />
-                      Download PDF
-                    </Button>
                   </td>
                 </tr>
               ))}
@@ -160,16 +155,6 @@ const DonorDashboard = () => {
           </table>
         </div>
       </main>
-
-      {/* Footer */}
-      <footer className="bg-muted mt-12 py-6">
-        <div className="max-w-7xl mx-auto px-4 flex justify-center gap-8 text-sm text-muted-foreground">
-          <Link to="/about">About</Link>
-          <Link to="/contact">Contact</Link>
-          <Link to="/privacy">Privacy Policy</Link>
-          <Link to="/terms">Terms of Service</Link>
-        </div>
-      </footer>
     </div>
   );
 };

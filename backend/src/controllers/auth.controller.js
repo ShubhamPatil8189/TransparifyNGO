@@ -12,6 +12,18 @@ dotenv.config();
 
 const generateOTP = () => Math.floor(1000 + Math.random() * 9000);
 
+
+const isProd = process.env.NODE_ENV === "production";
+
+const cookieOptions = {
+    httpOnly: true,
+    secure: isProd,                 // HTTPS only in prod
+    sameSite: isProd ? "None" : "Lax",
+    path: "/",                      // 🔴 REQUIRED
+};
+
+
+
 const createToken = (key) => { // Update to key from id
     return jwt.sign({ key }, process.env.JWTSecret, {
         expiresIn: '7d'
@@ -19,34 +31,55 @@ const createToken = (key) => { // Update to key from id
 }
 
 function logoutUser(req, res) {
-    res.cookie('jwt', '', {
-        httpOnly: true,
-        secure: true,
-        sameSite: 'None',
-        expires: new Date(0) // Set the expiration date to 1970 (Unix)
-    });
-    res.status(200).json({ message: 'Successfully logged out' }); // Send success message
+    res.clearCookie("jwt", cookieOptions);
+    res.status(200).json({ message: "Successfully logged out" });
 }
+
 
 async function sendOTP(req, res) {
     try {
-        const { email } = req.body;
+        const { email, purpose } = req.body; // purpose: 'register' or 'forgot'
+
+        if (!email || !purpose) {
+            return res.status(400).json({ message: "Email and purpose are required" });
+        }
+
         const user = await User.findOne({ email });
 
-        if (!user) {
-            return res.status(404).json({ message: "User not found" });
-        }
-        if (user && !user.isTemp) {
-            return res.status(404).json({ message: "User already verified" });
+        // Check for registration vs forgot password
+        if (purpose === "register") {
+            if (user && !user.isTemp) {
+                return res.status(400).json({ message: "User already registered" });
+            }
+        } else if (purpose === "forgot") {
+            if (!user) {
+                return res.status(404).json({ message: "User not found" });
+            }
+        } else {
+            return res.status(400).json({ message: "Invalid purpose" });
         }
 
+        // Generate OTP and hash it
         const otp = generateOTP();
-        const hashedOTP = await bcrypt.hash(otp.toString(), 10); // Hash the OTP
-        user.code = hashedOTP;
-        user.codeExpiry = Date.now() + 5 * 60 * 1000;
-        await user.save();
+        const hashedOTP = await bcrypt.hash(otp.toString(), 10);
 
-        // Nodemailer Transporter Setup
+        // Update user OTP and expiry
+        if (user) {
+            user.code = hashedOTP;
+            user.codeExpiry = Date.now() + 5 * 60 * 1000; // 5 minutes
+            await user.save();
+        } else if (purpose === "register") {
+            // If registering a temp user
+            const tempUser = new User({
+                email,
+                isTemp: true,
+                code: hashedOTP,
+                codeExpiry: Date.now() + 5 * 60 * 1000
+            });
+            await tempUser.save();
+        }
+
+        // Configure email
         const transporter = nodemailer.createTransport({
             service: 'gmail',
             auth: {
@@ -55,58 +88,46 @@ async function sendOTP(req, res) {
             }
         });
 
+        const subject = purpose === "register" ? "OTP for Registration" : "OTP for Password Reset";
+        const actionText = purpose === "register" ? "Registration on TransparifyNGO" : "Password Reset on TransparifyNGO";
+
         const mailOptions = {
             from: process.env.EMAIL,
             to: email,
-            subject: `Your OTP for Registration on TransparifyNGO`,
+            subject,
             html: `
                 <div style="font-family: Arial, sans-serif; max-width: 500px; margin: auto; padding: 20px; border-radius: 8px; background-color: #f9f9f9; border: 1px solid #ddd;">
-                    
-                    <!-- Header Section -->
                     <div style="text-align: center; background-color: #030711; padding: 15px; border-radius: 8px 8px 0 0;">
                         <img src="https://image2url.com/images/1765261019797-8a1ad951-be88-4d7a-9780-6136d5f50f6d.png" alt="TransparifyNGO Logo" style="max-width: 80px;">
                         <h2 style="color: #ffffff; margin: 10px 0;">OTP Verification</h2>
                     </div>
-
-                    <!-- OTP Message -->
                     <div style="background-color: #ffffff; padding: 20px; border-radius: 0 0 8px 8px; text-align: center;">
-                        <p style="font-size: 16px;">Dear <strong>${user.name}</strong>,</p>
-                        <p>Your OTP for <strong>Registration on TransparifyNGO</strong> is:</p>
-                        
+                        <p style="font-size: 16px;">Dear <strong>${user?.name || 'User'}</strong>,</p>
+                        <p>Your OTP for <strong>${actionText}</strong> is:</p>
                         <div style="background-color: #f3f4f6; padding: 15px; border-radius: 5px; margin-top: 10px; text-align: center;">
                             <h2 style="color: #030711; font-size: 24px; margin: 0;">${otp}</h2>
                             <p style="margin-top: 5px; color: red;">This OTP expires in 5 minutes.</p>
                         </div>
-
                         <p style="text-align: center; color: gray; font-size: 12px; margin-top: 20px;">
                             If you did not request this OTP, please ignore this email.<br>
                             Thank you, <br>TransparifyNGO Team
                         </p>
                     </div>
-
                     <hr style="border: none; border-top: 1px solid #ddd; margin: 20px 0;">
-
-                    <!-- Footer -->
                     <p style="color:gray; font-size:12px; text-align: center;">This is an autogenerated message. Please do not reply to this email.</p>
                 </div>
             `
         };
 
-        // Send OTP email
-        try {
-            await transporter.sendMail(mailOptions);
-        } catch (emailError) {
-            console.error("Error sending OTP email:", emailError.message);
-            return res.status(500).json({ message: "Failed to send OTP email" });
-        }
+        await transporter.sendMail(mailOptions);
 
         res.status(200).json({ message: "OTP sent successfully" });
-
     } catch (error) {
         console.error("OTP Error:", error.message);
         res.status(500).json({ message: "Internal Server Error", error });
     }
 }
+
 
 
 async function validateLogin(req, res) {
@@ -132,17 +153,18 @@ async function validateLogin(req, res) {
             return res.status(400).json({ message: "Invalid Password. Please try again." });
         }
 
-        const token = createToken(user._id); // Ensure this is based on user._id
-        res.cookie('jwt', token, {
-            httpOnly: true,
-            secure: true,
-            sameSite: 'None',
-            maxAge: 7 * 24 * 60 * 60 * 1000
+       const token = createToken(user._id);
+
+        res.cookie("jwt", token, {
+            ...cookieOptions,
+            maxAge: 7 * 24 * 60 * 60 * 1000,
         });
+
         res.status(200).json({
             userId: user._id,
-            user: user.name
+            user: user.name,
         });
+
 
     } catch (error) {
         console.error("Admin Login Error:", error.message);
@@ -171,7 +193,11 @@ async function registerTempUser(req, res) {
 
         if (tempUser) {
             // Use correct backend URL (port 4000)
-            await axios.post('http://localhost:4000/api/auth/sendOTP', { email: email });
+            await axios.post('http://localhost:4000/api/auth/sendOTP', {
+            email: email,
+            purpose: 'register' // specify purpose as "register"
+            });
+
             return res.status(200).json({ message: "Temp user created and OTP sent." });
         } else {
             return res.status(400).json({ message: "Failed to create temp user." });
@@ -182,6 +208,43 @@ async function registerTempUser(req, res) {
         return res.status(500).json({ message: "Internal Server Error" });
     }
 };
+
+async function validateForgotPass(req, res) {
+    try {
+        const { email, code, newPassword } = req.body;
+
+        if (!newPassword) {
+            return res.status(400).json({ message: "New password is required" });
+        }
+
+        const tempUser = await User.findOne({ email });
+
+        if (!tempUser?.code || tempUser.codeExpiry < Date.now()) {
+            return res.status(400).json({ message: "OTP expired. Please request a new one." });
+        }
+
+        const isCodeValid = await bcrypt.compare(code, tempUser.code);
+        if (!isCodeValid) {
+            return res.status(400).json({ message: "Invalid OTP. Please try again." });
+        }
+
+        // OTP is valid, update password directly (no hashing)
+        tempUser.password = newPassword;
+
+        // Clear OTP fields
+        tempUser.code = null;
+        tempUser.codeExpiry = null;
+        tempUser.isTemp = false;
+
+        await tempUser.save();
+
+        res.status(200).json({ message: "Password updated successfully" });
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).json({ message: "Internal server error" });
+    }
+}
+
 
 
 async function validateRegister(req, res) {
@@ -204,17 +267,17 @@ async function validateRegister(req, res) {
         await tempUser.save();
 
         const token = createToken(tempUser._id);
-        res.cookie('jwt', token, {
-            httpOnly: true,
-            secure: true,
-            sameSite: 'None',
-            maxAge: 7 * 24 * 60 * 60 * 1000
+
+        res.cookie("jwt", token, {
+            ...cookieOptions,
+            maxAge: 7 * 24 * 60 * 60 * 1000,
         });
 
         return res.status(200).json({
             userId: tempUser._id,
-            user: tempUser.name
+            user: tempUser.name,
         });
+
 
     } catch (error) {
         console.error(error.message);
@@ -228,5 +291,6 @@ module.exports = {
     validateLogin,
     validateRegister,
     logoutUser,
-    registerTempUser
+    registerTempUser,
+    validateForgotPass
 };

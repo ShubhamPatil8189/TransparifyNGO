@@ -32,6 +32,11 @@ import DonorsList from "./pages/DonorsList";
 import About from "./pages/About";
 import DonorReg from "./pages/DonorRegister";
 import AdminServices from "./pages/services/AdminService";
+import ProtectedRoute from "./auth/ProtectedRoute";
+import Donate from "./pages/Donate";
+import DonorProfile from "./pages/DonorProfile";
+import ForgotPass from "./pages/ForgotPassword";
+
 const queryClient = new QueryClient();
 
 const App = () => {
@@ -43,37 +48,51 @@ const App = () => {
 
         <BrowserRouter>
           <Routes>
+            {/* ---------- PUBLIC ROUTES ---------- */}
             <Route path="/" element={<LandingPage />} />
-            {/* <Route path="/home" element={<Index />} /> */}
-            <Route path="/login" element={<Login />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/audit-logs" element={<AuditLogs />} />
-            <Route path="/beneficiaries" element={<Beneficiaries />} />
-            <Route path="/all-campaigns" element={<AllCampaigns />} />
-            <Route path="/campaigns" element={<CampaignManagement />} />
-            <Route path="/campaigns/create" element={<CreateCampaign />} />
-            <Route path="/campaign/:id" element={<CampaignDetail />} />
-            <Route path="/donation/:id" element={<DonationDetails />} />
-            <Route path="/transactions/details/:id" element={<TransactionDetails />} />
-            <Route path="/donor-login" element={<DonorLogin />} />
-            <Route path="/donor-dashboard" element={<DonorDashboard />} />     
-            <Route path="/donor-receipts" element={<DonorReceipts />} />
-            <Route path="/help" element={<HelpSupport />} />
-            <Route path="/inventory" element={<InKindInventory />} />
-            <Route path="/inventory/add" element={<AddInKindItem />} />
-            <Route path="/auditor" element={<AuditorDashboard />} />
-            <Route path="/verify/:id" element={<ReceiptVerification />} />
             <Route path="/landing" element={<LandingPage />} />
+            <Route path="/home" element={<Index />} />
             <Route path="/about" element={<About />} />
-            <Route path="/transactions" element={<TransactionsList />} />
-            <Route path="/donors" element={<Dashboard />} />
-            {/* <Route path="/reports" element={<Dashboard />} /> */}
-            <Route path="/settings" element={<Dashboard />} />
-            <Route path="/donor-details-dashboard" element={<NGODashboard />} />
-            <Route path="/donor-list" element={<DonorsList />} />
+
+            <Route path="/login" element={<Login />} />
+            <Route path="/donor-login" element={<DonorLogin />} />
+            <Route path="/donor-register" element={<DonorReg />} />
+            <Route path="/forgot-password" element={<ForgotPass />} />
+
+            <Route path="/verify/:id" element={<ReceiptVerification />} />
+
+            {/* ---------- PROTECTED ROUTES ---------- */}
+            <Route element={<ProtectedRoute />}>
+              {/* Donor */}
+              <Route path="/donor-dashboard" element={<DonorDashboard />} />
+              <Route path="/donor-receipts" element={<DonorReceipts />} />
+              <Route path="/donate" element={<Donate />} />
+              <Route path="/donor-profile" element={<DonorProfile />} />
+
+              {/* NGO / Admin */}
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/audit-logs" element={<AuditLogs />} />
+              <Route path="/beneficiaries" element={<Beneficiaries />} />
+              <Route path="/all-campaigns" element={<AllCampaigns />} />
+              <Route path="/campaigns" element={<CampaignManagement />} />
+              <Route path="/campaigns/create" element={<CreateCampaign />} />
+              <Route path="/campaign/:id" element={<CampaignDetail />} />
+              <Route path="/donation/:id" element={<DonationDetails />} />
+              <Route path="/transactions" element={<TransactionsList />} />
+              <Route path="/transactions/details/:id" element={<TransactionDetails />} />
+              <Route path="/inventory" element={<InKindInventory />} />
+              <Route path="/inventory/add" element={<AddInKindItem />} />
+              <Route path="/donor-details-dashboard" element={<NGODashboard />} />
+              <Route path="/donor-list" element={<DonorsList />} />
+              <Route path="/services" element={<AdminServices />} />
+              <Route path="/help" element={<HelpSupport />} />
+            </Route>
+
+            {/* ---------- AUDITOR ---------- */}
+            <Route path="/auditor" element={<AuditorDashboard />} />
+
+            {/* ---------- FALLBACK ---------- */}
             <Route path="*" element={<NotFound />} />
-            <Route path="/services" element={<AdminServices/>}/>
-            <Route path="/donor-register" element={<DonorReg/>}/>
           </Routes>
         </BrowserRouter>
       </TooltipProvider>
@@ -82,4 +101,3 @@ const App = () => {
 };
 
 export default App;
-
