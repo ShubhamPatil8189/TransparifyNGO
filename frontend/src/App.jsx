@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Index from "./pages/Index";
 import Login from "./pages/Login";
@@ -47,17 +47,19 @@ const App = () => {
         <Toaster />
         <Sonner />
 
-        <Routes>
-          {/* ---------------- PUBLIC ROUTES ---------------- */}
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/landing" element={<LandingPage />} />
-          <Route path="/home" element={<Index />} />
-          <Route path="/about" element={<About />} />
+          <Routes>
+            {/* ---------- PUBLIC ROUTES ---------- */}
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/landing" element={<LandingPage />} />
+            <Route path="/home" element={<Index />} />
+            <Route path="/about" element={<About />} />
 
-          <Route path="/login" element={<Login />} />
-          <Route path="/donor-login" element={<DonorLogin />} />
-          <Route path="/donor-register" element={<DonorReg />} />
-          <Route path="/forgot-password" element={<ForgotPass />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/donor-login" element={<DonorLogin />} />
+            <Route path="/donor-register" element={<DonorReg />} />
+            <Route path="/forgot-password" element={<ForgotPass />} />
+            
+            <Route path="/help" element={<HelpSupport />} />
 
           {/* ---------------- PROTECTED ROUTES ---------------- */}
           <Route element={<ProtectedRoute />}>
@@ -66,6 +68,7 @@ const App = () => {
             <Route path="/donor-receipts" element={<DonorReceipts />} />
             <Route path="/donate" element={<Donate />} />
             <Route path="/donor-profile" element={<DonorProfile />} />
+            <Route path="/verify/:id" element={<ReceiptVerification />} />
           </Route>
 
             {/* NGO / Admin */}
@@ -90,15 +93,15 @@ const App = () => {
             <Route path="/donor-details-dashboard" element={<NGODashboard />} />
             <Route path="/donor-list" element={<DonorsList />} />
             <Route path="/donor/:id" element={<DonorDetail />} />
-            <Route path="/auditor" element={<AuditorDashboard />} />
-            <Route path="/verify/:id" element={<ReceiptVerification />} />
-            <Route path="/help" element={<HelpSupport />} />
             <Route path="/services" element={<AdminServices />} />
-          </Route>
+            </Route>
 
-          {/* ---------------- FALLBACK ---------------- */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+            {/* ---------- AUDITOR ---------- */}
+            <Route path="/auditor" element={<AuditorDashboard />} />
+
+            {/* ---------- FALLBACK ---------- */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
       </TooltipProvider>
     </QueryClientProvider>
   );
