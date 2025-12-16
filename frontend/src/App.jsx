@@ -44,7 +44,7 @@ const App = () => {
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<LandingPage />} />
-            <Route path="/home" element={<Index />} />
+            {/* <Route path="/home" element={<Index />} /> */}
             <Route path="/login" element={<Login />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/audit-logs" element={<AuditLogs />} />
@@ -56,7 +56,7 @@ const App = () => {
             <Route path="/donation/:id" element={<DonationDetails />} />
             <Route path="/transactions/details/:id" element={<TransactionDetails />} />
             <Route path="/donor-login" element={<DonorLogin />} />
-            <Route path="/donor-dashboard" element={<DonorDashboard />} />
+            <Route path="/donor-dashboard" element={<DonorDashboard />} />     
             <Route path="/donor-receipts" element={<DonorReceipts />} />
             <Route path="/help" element={<HelpSupport />} />
             <Route path="/inventory" element={<InKindInventory />} />
@@ -72,7 +72,7 @@ const App = () => {
             <Route path="/donor-details-dashboard" element={<NGODashboard />} />
             <Route path="/donor-list" element={<DonorsList />} />
             <Route path="*" element={<NotFound />} />
-            <Route path="services" element={<AdminServices/>}/>
+            <Route path="/services" element={<AdminServices/>}/>
             <Route path="/donor-register" element={<DonorReg/>}/>
           </Routes>
         </BrowserRouter>
