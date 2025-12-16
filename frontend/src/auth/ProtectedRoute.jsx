@@ -1,7 +1,7 @@
 import { Navigate, Outlet } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 
-const ProtectedRoute = () => {
+const ProtectedRoute = ({ role }) => {
   const { user, loading } = useAuth();
 
   if (loading) {
@@ -13,9 +13,16 @@ const ProtectedRoute = () => {
   }
 
   if (!user) {
-    return <Navigate to="/donor-login" replace />;
+    // Not logged in
+    return <Navigate to="/login" replace />;
   }
 
+  // If role is specified, check if user has it
+  if (role && (!user.roles || !user.roles.includes(role))) {
+    return <Navigate to="/login" replace />;
+  }
+
+  // Logged in (and role is fine if specified)
   return <Outlet />;
 };
 

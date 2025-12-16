@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import DonorNavbar from "@/components/layout/DonorNavbar";
+import DashboardHeader from "@/components/layout/DashboardHeader";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { useAuth } from "@/context/AuthContext";
 import { useNavigate } from "react-router-dom";
-const DonorProfile = () => {
+const AdminProfile = () => {
   const { user: authUser, setUser: setAuthUser } = useAuth();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -40,19 +40,16 @@ const DonorProfile = () => {
     toast.error("Please enter new password.");
     return;
   }
-
   if (!currentPassword && newPassword) {
     toast.error("Please enter current password.");
     return;
   }
-
   if (newPassword && newPassword.length < 6) {
     toast.error("New password must be at least 6 characters.");
     return;
   }
 
   setLoading(true);
-
   try {
     const res = await axios.put(
       "http://localhost:4000/api/user/me",
@@ -60,20 +57,14 @@ const DonorProfile = () => {
       { withCredentials: true }
     );
 
-    // 🔴 FORCE LOGOUT if name OR password changed
-    await axios.get("http://localhost:4000/api/auth/logout", {
-      withCredentials: true,
-    });
-
+    // Clear AuthContext
     setAuthUser(null);
 
-    toast.success(
-      newPassword
-        ? "Password updated. Please log in again."
-        : "Profile updated. Please log in again."
-    );
+    // Logout via backend
+    await axios.get("http://localhost:4000/api/auth/logout", { withCredentials: true });
 
-    navigate("/donor-login", { replace: true });
+    toast.success("Profile updated. Please log in again.");
+    navigate("/login", { replace: true });
 
   } catch (err) {
     console.error(err);
@@ -86,7 +77,7 @@ const DonorProfile = () => {
 
   return (
     <div className="min-h-screen bg-muted/30">
-      <DonorNavbar />
+      <DashboardHeader />
 
       <div className="max-w-xl mx-auto py-10 px-4">
         <Card>
@@ -160,4 +151,4 @@ const DonorProfile = () => {
   );
 };
 
-export default DonorProfile;
+export default AdminProfile;

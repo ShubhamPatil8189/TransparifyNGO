@@ -1,16 +1,62 @@
-const mongoose = require('mongoose');
-const { Schema } = mongoose;
+const mongoose = require("mongoose");
 
-const campaignSchema = new Schema({
-  title: String,
-  description: String,
-  goalAmount: Number,
-  collectedAmount: { type: Number, default: 0 },
-  startDate: Date,
-  endDate: Date,
-  bannerUrl: String,
-  updates: [{ text: String, mediaUrl: String, date: Date }],
-  createdAt: { type: Date, default: Date.now }
-});
+const CampaignSchema = new mongoose.Schema(
+  {
+    // // NGO / Admin reference
+    // ngoId: {
+    //   type: mongoose.Schema.Types.ObjectId,
+    //   ref: "NGO",
+    //   required: true,
+    // },
 
-module.exports = mongoose.model('Campaign', campaignSchema);
+    // Campaign basic info
+    title: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+
+    description: {
+      type: String,
+      required: true,
+    },
+
+    goalAmount: {
+      type: Number,
+      required: true,
+      min: 1,
+    },
+
+    deadline: {
+      type: Date,
+      required: true,
+    },
+
+    bannerUrl: {
+      type: String, // uploaded image URL
+    },
+
+    // Campaign status
+    status: {
+      type: String,
+      enum: ["draft", "published", "completed"],
+      default: "draft",
+    },
+
+    // Analytics (future-ready)
+    totalRaised: {
+      type: Number,
+      default: 0,
+    },
+
+    donorCount: {
+      type: Number,
+      default: 0,
+    },
+  },
+  {
+    timestamps: true, // createdAt, updatedAt
+  }
+);
+
+module.exports = mongoose.model("Campaign", CampaignSchema);

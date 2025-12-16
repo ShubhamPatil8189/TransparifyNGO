@@ -1,43 +1,68 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff, HelpCircle, Search } from "lucide-react";
+import axios from "axios";
+import { toast } from "sonner";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { useAuth } from "@/context/AuthContext"; // assume you have AuthContext
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const navigate = useNavigate();
+  const { checkAuth } = useAuth(); // frontend auth context
+
+  // 🔐 ADMIN LOGIN HANDLER
+  const handleAdminLogin = async (e) => {
     e.preventDefault();
-    navigate("/dashboard");
+
+    if (!email || !password) {
+      toast.error("Email and password are required");
+      return;
+    }
+
+    try {
+      // Step 1: Login
+      await axios.post(
+        "http://localhost:4000/api/auth/loginAdmin",
+        { email, password },
+        { withCredentials: true }
+      );
+
+      // Step 2: Re-validate auth immediately
+      const user = await checkAuth(); // ✅ now returns user
+
+      if (user?.roles?.includes("ADMIN")) {
+        toast.success("Admin login successful");
+        navigate("/dashboard", { replace: true });
+      } else {
+        toast.error("You are not authorized as admin");
+      }
+
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Admin login failed");
+    }
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col ">
-      {/* HEADER — dashboard gradient + navbar */}
+    <div className="min-h-screen bg-background flex flex-col">
+      {/* HEADER */}
       <header
         className="sticky top-0 z-50"
         style={{
           background:
             "linear-gradient(135deg, hsl(199, 89%, 30%) 0%, hsl(160, 84%, 30%) 100%)",
-          position: "sticky",
         }}
       >
         <div className="flex items-center justify-between px-6 py-3 max-w-7xl mx-auto text-white">
-          {/* left: logo + title */}
           <Link to="/" className="flex items-center gap-3">
             <div className="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center">
-              <svg
-                className="w-6 h-6 text-white"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                aria-hidden
-              >
+              <svg className="w-6 h-6 text-white" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
               </svg>
             </div>
@@ -49,51 +74,29 @@ export default function Login() {
             </div>
           </Link>
 
-          {/* center: nav (hidden on small) */}
           <nav className="hidden md:flex items-center gap-4">
-            <Link
-              to="/dashboard"
-              className="px-3 py-2 text-sm rounded-md hover:bg-white/10"
-            >
+            <Link to="/dashboard" className="px-3 py-2 text-sm rounded-md hover:bg-white/10">
               Dashboard
             </Link>
-            <Link
-              to="/all-campaigns"
-              className="px-3 py-2 text-sm rounded-md hover:bg-white/10"
-            >
+            <Link to="/all-campaigns" className="px-3 py-2 text-sm rounded-md hover:bg-white/10">
               Campaigns
             </Link>
-            <Link
-              to="/donor-list"
-              className="px-3 py-2 text-sm rounded-md hover:bg-white/10"
-            >
+            <Link to="/donor-list" className="px-3 py-2 text-sm rounded-md hover:bg-white/10">
               Donors
             </Link>
-            <Link
-              to="/reports"
-              className="px-3 py-2 text-sm rounded-md hover:bg-white/10"
-            >
+            <Link to="/reports" className="px-3 py-2 text-sm rounded-md hover:bg-white/10">
               Reports
             </Link>
           </nav>
 
-          {/* right: search (small icon), support */}
           <div className="flex items-center gap-3">
-            <button
-              className="hidden md:flex items-center gap-2 px-3 py-2 rounded-md bg-white/10 hover:bg-white/12 text-white text-sm"
-              aria-label="search"
-              type="button"
-            >
-              <Search className="w-4 h-4" />{" "}
+            <button className="hidden md:flex items-center gap-2 px-3 py-2 rounded-md bg-white/10 hover:bg-white/12 text-sm">
+              <Search className="w-4 h-4" />
               <span className="hidden sm:inline">Search</span>
             </button>
 
             <Link to="/help">
-              <Button
-                variant="outline"
-                size="sm"
-                className="border-blue-500 text-blue-500 hover:bg-blue-500/10"
-              >
+              <Button variant="outline" size="sm" className="border-blue-500 text-blue-500">
                 <HelpCircle className="w-4 h-4 mr-2" />
                 Support
               </Button>
@@ -102,121 +105,93 @@ export default function Login() {
         </div>
       </header>
 
-      {/* Main Content */}
+      {/* MAIN */}
       <main className="flex-1 flex items-center justify-center p-6">
         <div className="w-full max-w-md">
-          <Tabs defaultValue="admin" className="w-full">
-            {/* TAB BUTTONS */}
-            <TabsList className="grid grid-cols-2 w-full mb-6">
-              <TabsTrigger value="admin">Admin Login</TabsTrigger>
-              <TabsTrigger value="donor">Donor Login / Register</TabsTrigger>
+          <Tabs defaultValue="admin">
+            <TabsList className="grid grid-cols-2 w-full mb-6 bg-muted p-1 rounded-lg select-none">
+              <TabsTrigger
+                value="admin"
+                className="select-none rounded-md transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm"
+              >
+                Admin Login
+              </TabsTrigger>
+
+              <TabsTrigger
+                value="donor"
+                className="select-none rounded-md transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm"
+              >
+                Donor Login / Register
+              </TabsTrigger>
             </TabsList>
 
-            {/* ---------------- ADMIN LOGIN TAB ---------------- */}
+            {/* ADMIN LOGIN */}
             <TabsContent value="admin">
-              <div className="bg-card rounded-lg shadow-sm border border-border p-8">
+              <div className="bg-card rounded-lg border p-8">
                 <h2 className="text-2xl font-semibold text-center mb-8">
                   Admin Login
                 </h2>
 
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium">Email Address</label>
+                <form onSubmit={handleAdminLogin} className="space-y-6">
+                  <div>
+                    <label className="text-sm font-medium">Email</label>
                     <Input
                       type="email"
-                      placeholder="admin@example.org"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
+                      required
                     />
                   </div>
 
-                  <div className="space-y-2">
+                  <div>
                     <label className="text-sm font-medium">Password</label>
                     <div className="relative">
                       <Input
                         type={showPassword ? "text" : "password"}
-                        placeholder="Enter your password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
+                        required
                       />
                       <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                        className="absolute right-3 top-1/2 -translate-y-1/2"
                       >
-                        {showPassword ? (
-                          <EyeOff className="w-4 h-4" />
-                        ) : (
-                          <Eye className="w-4 h-4" />
-                        )}
+                        {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                       </button>
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <Checkbox id="remember" />
-                      <label htmlFor="remember" className="text-sm">
-                        Remember Me
-                      </label>
-                    </div>
-                    <Link
-                      to="/forgot-password"
-                      className="text-sm text-primary hover:underline"
-                    >
+                  <div className="flex justify-end">
+                    <Link to="/forgot-password" className="text-sm text-primary">
                       Forgot Password?
                     </Link>
                   </div>
 
                   <Button type="submit" className="w-full">
-                    Secure Login
+                    Secure Admin Login
                   </Button>
-
-                  <p className="text-center text-sm text-muted-foreground">
-                    Not an administrator? Contact your NGO's administrator.
-                  </p>
                 </form>
               </div>
             </TabsContent>
 
-            {/* ---------------- DONOR LOGIN / REGISTER TAB ---------------- */}
+            {/* DONOR */}
             <TabsContent value="donor">
-              <div className="bg-card rounded-lg shadow-sm border border-border p-8">
-                <h2 className="text-2xl font-semibold text-center mb-8">
-                  Donor Login / Register
-                </h2>
-
-                <div className="space-y-4">
-                  <Button
-                    className="w-full"
-                    onClick={() => navigate("/donor-login")}
-                  >
-                    Donor Login
-                  </Button>
-                  <Button
-                    className="w-full"
-                    variant="outline"
-                    onClick={() => navigate("/donor-register")}
-                  >
-                    Register as Donor
-                  </Button>
-                </div>
+              <div className="bg-card rounded-lg border p-8 space-y-4">
+                <Button className="w-full" onClick={() => navigate("/donor-login")}>
+                  Donor Login
+                </Button>
+                <Button variant="outline" className="w-full" onClick={() => navigate("/donor-register")}>
+                  Register as Donor
+                </Button>
               </div>
             </TabsContent>
           </Tabs>
         </div>
       </main>
 
-      {/* Footer */}
-      <footer className="py-4 px-6 text-center text-sm text-muted-foreground border-t border-border">
-        © 2024 TransparencyHub. All rights reserved.
-        <Link to="/privacy" className="ml-2 hover:underline">
-          Privacy Policy
-        </Link>{" "}
-        |
-        <Link to="/terms" className="ml-1 hover:underline">
-          Terms of Service
-        </Link>
+      <footer className="py-4 text-center text-sm border-t">
+        © 2024 TransparifyNGO
       </footer>
     </div>
   );

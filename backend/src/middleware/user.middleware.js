@@ -19,7 +19,7 @@ const authMiddleware = async (req, res, next) => {
 };
 
 const adminOnly = (req, res, next) => {
-    if (!req.user.roles.includes("NGO_ADMIN")) {
+    if (!req.user.roles.includes("ADMIN")) {
         return res.status(403).json({ message: "Access denied: Admins only" });
     }
     next();

@@ -35,8 +35,9 @@ import AdminServices from "./pages/services/AdminService";
 import ProtectedRoute from "./auth/ProtectedRoute";
 import Donate from "./pages/Donate";
 import DonorProfile from "./pages/DonorProfile";
+import AdminProfile from "./pages/AdminProfile";
 import ForgotPass from "./pages/ForgotPassword";
-
+import DonorDetail from "./pages/DonorDetail";
 const queryClient = new QueryClient();
 
 const App = () => {
@@ -65,9 +66,12 @@ const App = () => {
             <Route path="/donor-receipts" element={<DonorReceipts />} />
             <Route path="/donate" element={<Donate />} />
             <Route path="/donor-profile" element={<DonorProfile />} />
+          </Route>
 
             {/* NGO / Admin */}
+          <Route element={<ProtectedRoute role="ADMIN" />}>
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/admin-profile" element={<AdminProfile />} />
             <Route path="/audit-logs" element={<AuditLogs />} />
             <Route path="/beneficiaries" element={<Beneficiaries />} />
             <Route path="/all-campaigns" element={<AllCampaigns />} />
@@ -85,6 +89,7 @@ const App = () => {
             <Route path="/settings" element={<Dashboard />} />
             <Route path="/donor-details-dashboard" element={<NGODashboard />} />
             <Route path="/donor-list" element={<DonorsList />} />
+            <Route path="/donor/:id" element={<DonorDetail />} />
             <Route path="/auditor" element={<AuditorDashboard />} />
             <Route path="/verify/:id" element={<ReceiptVerification />} />
             <Route path="/help" element={<HelpSupport />} />

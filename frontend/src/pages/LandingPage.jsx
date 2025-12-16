@@ -90,7 +90,7 @@ const LandingPage = () => {
               </Button>
             </Link>
 
-            <Link to="/register">
+            <Link to="/donate">
               <Button
                 variant="outline"
                 size="sm"

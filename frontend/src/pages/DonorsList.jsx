@@ -1,252 +1,231 @@
 import React, { useMemo, useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
-import { User, Search, ChevronLeft, ChevronRight } from "lucide-react";
-import DashboardHeader from "@/components/layout/DashboardHeader"; // keep header component
-
-/* ---------- Mock donors data (replace with API call later) ---------- */
-const SAMPLE_DONORS = [
-  /* ... same sample data as before ... */
-  {
-    id: "d1",
-    firstName: "Asha",
-    lastName: "Patel",
-    email: "asha.patel@example.com",
-    phone: "9876543210",
-    ngo: "Save the Children",
-    joinedAt: "2024-08-12",
-    totalDonations: 1200,
-    lastDonation: 200,
-  },
-  // (include the rest of your SAMPLE_DONORS here)
-];
+import { Link } from "react-router-dom";
+import { User, Search } from "lucide-react";
+import DashboardHeader from "@/components/layout/DashboardHeader";
+import axios from "axios";
 
 /* ---------- Helpers ---------- */
-const uniqueNgos = (arr) => {
-  const s = new Set(arr.map((d) => d.ngo).filter(Boolean));
-  return Array.from(s);
-};
-
 const formatDate = (iso) => {
   try {
-    const d = new Date(iso);
-    return d.toLocaleDateString();
+    return new Date(iso).toLocaleDateString();
   } catch {
-    return iso;
+    return "—";
   }
 };
 
-/* ---------- Component ---------- */
 export default function DonorsList() {
-  const location = useLocation();
+  const [donors, setDonors] = useState([]);
+  const [campaigns, setCampaigns] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const [query, setQuery] = useState("");
-  const [ngoFilter, setNgoFilter] = useState("");
-  const [sortBy, setSortBy] = useState("joinedDesc"); // joinedDesc, nameAsc, donationsDesc
-  const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(6);
+  const [selectedCampaign, setSelectedCampaign] = useState("");
+  const [sortBy, setSortBy] = useState("joinedDesc");
 
-  const donors = SAMPLE_DONORS;
-  const ngos = useMemo(() => uniqueNgos(donors), [donors]);
+  const API_BASE_URL = "http://localhost:4000/api";
 
+  /* ---------- Fetch donors ---------- */
+  useEffect(() => {
+    const fetchDonors = async () => {
+      try {
+        const res = await axios.get(`${API_BASE_URL}/donor/getAllDonors`, {
+          withCredentials: true,
+        });
+        setDonors(res.data || []);
+      } catch (err) {
+        console.error("Failed to fetch donors:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDonors();
+  }, []);
+
+  /* ---------- Fetch campaigns ---------- */
+  useEffect(() => {
+    const fetchCampaigns = async () => {
+      try {
+        const res = await axios.get(`${API_BASE_URL}/campaign/ngos/campaigns`, {
+          withCredentials: true,
+        });
+        setCampaigns(res.data || []);
+      } catch (err) {
+        console.error("Failed to fetch campaigns:", err);
+      }
+    };
+
+    fetchCampaigns();
+  }, []);
+
+  /* ---------- Filtering & Sorting ---------- */
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
+
     let res = donors.filter((d) => {
-      const fullname = `${d.firstName} ${d.lastName}`.toLowerCase();
-      return (
-        (!q || fullname.includes(q) || (d.email && d.email.toLowerCase().includes(q))) &&
-        (!ngoFilter || d.ngo === ngoFilter)
-      );
+      const matchesQuery =
+        !q ||
+        d.name?.toLowerCase().includes(q) ||
+        d.email?.toLowerCase().includes(q);
+
+      const matchesCampaign =
+        !selectedCampaign || d.campaignDonated?.includes(selectedCampaign);
+
+      return matchesQuery && matchesCampaign;
     });
 
+    // Sorting
     if (sortBy === "nameAsc") {
-      res.sort((a, b) => {
-        const an = `${a.firstName} ${a.lastName}`.toLowerCase();
-        const bn = `${b.firstName} ${b.lastName}`.toLowerCase();
-        return an.localeCompare(bn);
-      });
+      res.sort((a, b) => a.name.localeCompare(b.name));
     } else if (sortBy === "donationsDesc") {
-      res.sort((a, b) => b.totalDonations - a.totalDonations);
+      res.sort((a, b) => (b.totalDonated || 0) - (a.totalDonated || 0));
     } else {
-      res.sort((a, b) => new Date(b.joinedAt) - new Date(a.joinedAt));
+      res.sort(
+        (a, b) =>
+          new Date(b.createdAt.$date || b.createdAt) -
+          new Date(a.createdAt.$date || a.createdAt)
+      );
     }
 
     return res;
-  }, [donors, query, ngoFilter, sortBy]);
+  }, [donors, query, selectedCampaign, sortBy]);
 
-  const total = filtered.length;
-  const totalPages = Math.max(1, Math.ceil(total / pageSize));
-  const pageItems = useMemo(() => {
-    const start = (page - 1) * pageSize;
-    return filtered.slice(start, start + pageSize);
-  }, [filtered, page, pageSize]);
-
-  useEffect(() => {
-    if (page > totalPages) setPage(1);
-  }, [totalPages]);
+  /* ---------- Loading ---------- */
+  if (loading) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <DashboardHeader />
+        <main className="flex-1 flex justify-center items-center">
+          <p>Loading donors...</p>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
       <DashboardHeader />
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="max-w-7xl mx-auto px-4 py-8">
         {/* Controls */}
-        <div className="flex flex-col md:flex-row gap-4 md:items-center md:justify-between mb-6">
-          <div className="flex items-center gap-3 w-full md:w-1/2">
-            <div className="relative w-full">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-              <input
-                type="search"
-                aria-label="Search donors"
-                placeholder="Search donors by name or email..."
-                value={query}
-                onChange={(e) => { setQuery(e.target.value); setPage(1); }}
-                className="pl-10 pr-3 py-2 w-full rounded-md border bg-card text-foreground placeholder:text-muted-foreground"
-              />
-            </div>
+        <div className="flex flex-col md:flex-row gap-4 md:justify-between mb-6">
+          <div className="relative w-full md:w-1/2">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <input
+              type="search"
+              placeholder="Search donors by name or email..."
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              className="pl-10 pr-3 py-2 w-full rounded-md border bg-card"
+            />
           </div>
 
-          <div className="flex items-center gap-3">
-            {/* NGO filter (native select) */}
+          <div className="flex gap-3">
+            {/* Campaign Filter */}
             <select
-              value={ngoFilter}
-              onChange={(e) => { setNgoFilter(e.target.value); setPage(1); }}
-              className="w-44 py-2 px-3 rounded-md border bg-card text-foreground"
-              aria-label="Filter by NGO"
+              value={selectedCampaign}
+              onChange={(e) => setSelectedCampaign(e.target.value)}
+              className="py-2 px-3 rounded-md border bg-card"
             >
-              <option value="">All NGOs</option>
-              {ngos.map((n) => <option key={n} value={n}>{n}</option>)}
+              <option value="">All Campaigns</option>
+              {campaigns.map((c) => (
+                <option key={c._id} value={c.title}>
+                  {c.title} {c.status === "ended" ? "(Ended)" : "(Active)"}
+                </option>
+              ))}
             </select>
 
-            {/* Sort select */}
+            {/* Sorting */}
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="w-44 py-2 px-3 rounded-md border bg-card text-foreground"
-              aria-label="Sort donors"
+              className="py-2 px-3 rounded-md border bg-card"
             >
               <option value="joinedDesc">Newest Joined</option>
               <option value="nameAsc">Name (A → Z)</option>
               <option value="donationsDesc">Top Donors</option>
             </select>
-
-            {/* Page size */}
-            <select
-              value={String(pageSize)}
-              onChange={(e) => { setPageSize(Number(e.target.value)); setPage(1); }}
-              className="w-28 py-2 px-3 rounded-md border bg-card text-foreground"
-              aria-label="Donors per page"
-            >
-              <option value="6">6 / page</option>
-              <option value="12">12 / page</option>
-              <option value="24">24 / page</option>
-            </select>
           </div>
         </div>
 
         {/* Summary */}
-        <div className="flex items-center justify-between mb-4">
-          <div className="text-sm text-muted-foreground">
-            Showing <span className="font-medium">{filtered.length}</span> donors
-          </div>
-          <div className="text-sm text-muted-foreground">
-            Page {page} of {totalPages}
-          </div>
+        <div className="mb-4 text-sm text-muted-foreground">
+          Showing <b>{filtered.length}</b> donors
         </div>
 
-        {/* Donor cards */}
+        {/* Donor Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {pageItems.map((d) => (
-            <div key={d.id} className="bg-card border rounded-lg p-4 flex items-center gap-4">
-              <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary">
-                <User className="w-6 h-6" />
+          {filtered.map((d) => (
+            <div
+              key={d._id.$oid || d._id}
+              className="bg-card border rounded-lg p-4 flex gap-4 flex-col"
+            >
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                  <User className="w-6 h-6" />
+                </div>
+                <div className="flex-1">
+                  <div className="font-semibold">{d.name}</div>
+                  <div className="text-xs text-muted-foreground">{d.email}</div>
+                </div>
+                <div className="text-right">
+                  <div className="text-sm font-medium">₹{d.totalDonated || 0}</div>
+                  <div className="text-xs text-muted-foreground">Total Donated</div>
+                </div>
               </div>
 
-              <div className="flex-1">
-                <div className="flex items-start justify-between gap-4">
-                  <div>
-                    <div className="font-semibold">{d.firstName} {d.lastName}</div>
-                    <div className="text-xs text-muted-foreground">{d.email}</div>
-                    <div className="text-xs text-muted-foreground">{d.phone}</div>
-                  </div>
+              {/* Campaigns */}
+              <div className="mt-2 text-xs text-muted-foreground">
+                <span className="font-medium">Campaigns:</span>{" "}
+                {d.campaignDonated?.length ? d.campaignDonated.join(", ") : "—"}
+              </div>
 
-                  <div className="text-right">
-                    <div className="text-sm font-medium">${d.totalDonations}</div>
-                    <div className="text-xs text-muted-foreground">Last: ${d.lastDonation}</div>
-                  </div>
+              {/* Financial Details */}
+              {d.financialDetails?.length > 0 && (
+                <div className="mt-1 text-xs text-muted-foreground">
+                  <span className="font-medium">Financial Donations:</span>{" "}
+                  {d.financialDetails.map((f) => (
+                    <div key={f._id?.$oid || f._id}>
+                      {f.campaignName}: ₹{f.amount} on {formatDate(f.date.$date || f.date)}
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* In-Kind Details */}
+              {d.inKindDetails?.length > 0 && (
+                <div className="mt-1 text-xs text-muted-foreground">
+                  <span className="font-medium">In-Kind Donations:</span>{" "}
+                  {d.inKindDetails.map((i) => (
+                    <div key={i._id?.$oid || i._id}>
+                      {i.campaignName}: {i.description} (₹{i.estimatedValue}) on{" "}
+                      {formatDate(i.date.$date || i.date)}
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Joined Date and View Button */}
+              <div className="mt-3 flex justify-between items-center">
+                <div className="text-xs text-muted-foreground">
+                  Joined {formatDate(d.createdAt.$date || d.createdAt)}
                 </div>
 
-                <div className="mt-3 flex items-center justify-between gap-4">
-                  <div className="text-xs text-muted-foreground">
-                    <span className="font-medium">{d.ngo}</span> • Joined {formatDate(d.joinedAt)}
-                  </div>
-
-                  <div className="flex items-center gap-2">
-                    <Link to={`/donor/${d.id}`} className="inline-flex items-center px-3 py-1.5 rounded-md text-sm bg-transparent border border-border hover:bg-primary/5">
-                      View
-                    </Link>
-                    <button
-                      type="button"
-                      onClick={() => { window.location.href = `mailto:${d.email}`; }}
-                      className="inline-flex items-center px-3 py-1.5 rounded-md text-sm border border-border hover:bg-primary/5"
-                    >
-                      Email
-                    </button>
-                  </div>
-                </div>
+                <Link
+                  to={`/donor/${d._id.$oid || d._id}`}
+                  className="px-3 py-1.5 rounded-md text-sm border hover:bg-primary/5"
+                >
+                  View
+                </Link>
               </div>
             </div>
           ))}
 
-          {pageItems.length === 0 && (
-            <div className="col-span-full text-center text-muted-foreground py-12 bg-card rounded-md">
-              No donors found matching your criteria.
+          {filtered.length === 0 && (
+            <div className="col-span-full text-center py-12 text-muted-foreground bg-card rounded-md">
+              No donors found.
             </div>
           )}
-        </div>
-
-        {/* Pagination */}
-        <div className="mt-6 flex items-center justify-between">
-          <div className="text-sm text-muted-foreground">
-            Showing {(page - 1) * pageSize + 1} - {Math.min(page * pageSize, total)} of {total}
-          </div>
-
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              disabled={page <= 1}
-              onClick={() => setPage((p) => Math.max(1, p - 1))}
-              className="inline-flex items-center p-2 rounded-md border border-border hover:bg-primary/5 disabled:opacity-50"
-            >
-              <ChevronLeft className="w-4 h-4" />
-            </button>
-
-            <div className="hidden sm:flex items-center gap-1 px-2">
-              {Array.from({ length: totalPages }).map((_, i) => {
-                const p = i + 1;
-                const isActive = p === page;
-                return (
-                  <button
-                    key={p}
-                    onClick={() => setPage(p)}
-                    className={`w-8 h-8 rounded-md flex items-center justify-center text-sm ${
-                      isActive ? "bg-primary text-primary-foreground" : "hover:bg-primary/5"
-                    }`}
-                  >
-                    {p}
-                  </button>
-                );
-              })}
-            </div>
-
-            <button
-              type="button"
-              disabled={page >= totalPages}
-              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-              className="inline-flex items-center p-2 rounded-md border border-border hover:bg-primary/5 disabled:opacity-50"
-            >
-              <ChevronRight className="w-4 h-4" />
-            </button>
-          </div>
         </div>
       </main>
     </div>

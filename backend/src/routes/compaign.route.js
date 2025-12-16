@@ -4,7 +4,9 @@ const {
   listNGOCampaigns,
   createCampaign,
   getCampaignById,
-  donateToCampaign
+  donateToCampaign,
+  deleteCampaignById,
+  updateCampaignById
 } = require("../controllers/campaign.controller.js");
 
 const router = express.Router();
@@ -12,6 +14,8 @@ const router = express.Router();
 // Public routes
 router.get("/ngos/campaigns", listNGOCampaigns);
 router.get("/:id", getCampaignById);
+router.put("/:id", authMiddleware, adminOnly, updateCampaignById);
+router.delete("/:id", authMiddleware, adminOnly, deleteCampaignById);
 
 // Admin (create campaign)
 router.post("/ngos/campaigns", authMiddleware, adminOnly, createCampaign);
