@@ -5,6 +5,7 @@ const mongoose = require("mongoose");
 const cookieParser = require('cookie-parser');
 const path = require("path");
 
+const donationRoutes = require("./routes/donationRoutes");
 const indexRouter = require('../src/routes/index.js');
 const razorpayWebhookRoute = require("./routes/razorpayWebhook");
 const inKindTransactionsRoute = require("./routes/inKindTransactions");
@@ -15,6 +16,7 @@ const receiptVerifyRoute = require("./routes/receiptVerify");
 const receiptPdfRoute = require("./routes/receiptPdf");
 const inventory = require("./routes/inventoryRoutes");
 const transparency = require("./routes/publicTransparency");
+const receipts = require("./routes/receipts");
 
 dotenv.config();
 
@@ -54,6 +56,10 @@ app.use("/receipts", express.static(path.join(__dirname, "receipts")));
 // --------------------
 // Routes
 // --------------------
+
+// Route to get all receipts
+app.use("/api", receipts);
+app.use("/api", donationRoutes);
 app.use('/api', indexRouter);
 app.use("/api/transactions", transactionsRoute);
 app.use("/api/transactions/in-kind", inKindTransactionsRoute);

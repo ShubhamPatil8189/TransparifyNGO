@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import DonorNavbar from "@/components/layout/DonorNavbar";
 import { Shield, Heart, Award } from "lucide-react";
 import {
@@ -11,7 +12,6 @@ import {
 } from "recharts";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-
 
 const badges = [
   { icon: Shield, label: "Champion Donor", color: "bg-primary" },
@@ -28,17 +28,84 @@ const DonorDashboard = () => {
 
   useEffect(() => {
     const fetchDashboardData = async () => {
-      const res = await fetch("http://localhost:4000/api/user/me", {
-        credentials: "include",
-      });
-      const data = await res.json();
+      try {
+        // Fetch logged-in user
+        const userRes = await fetch("http://localhost:4000/api/user/me", {
+          credentials: "include",
+        });
+        const userData = await userRes.json();
 
-      if (res.ok) {
-        setUserName(data.name);
-        setTimelineData(data.timeline || []);
-        setDonations(data.donations || []);
-        setTotalDonated(data.totalDonated || 0);
-        setTotalCount(data.totalCount || 0);
+        if (userRes.ok) {
+          setUserName(userData.name || "Donor");
+        }
+
+        // Fetch donation overview
+        const donationRes = await fetch(
+          "http://localhost:4000/api/donations/overview",
+          {
+            credentials: "include",
+          }
+        );
+        const donationData = await donationRes.json();
+
+        if (donationRes.ok && donationData.success) {
+          setTotalCount(donationData.stats.totalDonations || 0);
+          setTotalDonated(donationData.stats.totalDonatedMoney || 0);
+
+          // Format donation history
+          const formattedDonations = donationData.recentDonations.map(
+            (donation) => {
+              const isFinancial = donation.type === "financial";
+
+              return {
+                id: donation._id,
+                date: new Date(donation.createdAt).toLocaleDateString(),
+                ngo: donation.donor?.name || "Unknown NGO",
+                project: isFinancial
+                  ? "Financial Donation"
+                  : donation.items?.[0]?.description || "In-Kind Donation",
+                amount: isFinancial
+                  ? `₹${donation.amount}`
+                  : `₹${donation.items?.reduce(
+                      (sum, item) => sum + item.estimatedValue,
+                      0
+                    )}`,
+                status: "Completed",
+                createdAt: donation.createdAt,
+              };
+            }
+          );
+
+          setDonations(formattedDonations);
+
+          // Build timeline data (monthly)
+          const monthlyTotals = {};
+          donationData.recentDonations.forEach((donation) => {
+            const month = new Date(donation.createdAt).toLocaleString("default", {
+              month: "short",
+            });
+
+            const amount =
+              donation.type === "financial"
+                ? donation.amount
+                : donation.items?.reduce(
+                    (sum, item) => sum + item.estimatedValue,
+                    0
+                  );
+
+            monthlyTotals[month] =
+              (monthlyTotals[month] || 0) + amount;
+          });
+
+          const timeline = Object.keys(monthlyTotals).map((month) => ({
+            month,
+            amount: monthlyTotals[month],
+          }));
+
+          setTimelineData(timeline);
+        }
+      } catch (error) {
+        console.error("Dashboard fetch error:", error);
       }
     };
 
@@ -100,9 +167,7 @@ const DonorDashboard = () => {
       <main className="max-w-7xl mx-auto px-4 py-10 space-y-8">
         {/* Timeline */}
         <div className="bg-card rounded-xl border p-6">
-          <h2 className="text-xl font-semibold mb-4">
-            Your Impact Timeline
-          </h2>
+          <h2 className="text-xl font-semibold mb-4">Your Impact Timeline</h2>
 
           {timelineData.length === 0 ? (
             <p className="text-muted-foreground text-sm">
@@ -152,9 +217,9 @@ const DonorDashboard = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {donations.map((item, i) => (
+                  {donations.map((item) => (
                     <tr
-                      key={i}
+                      key={item.id}
                       className="border-b last:border-0 hover:bg-muted/40 transition"
                     >
                       <td className="py-3">{item.date}</td>
@@ -162,23 +227,16 @@ const DonorDashboard = () => {
                       <td>{item.project}</td>
                       <td className="font-medium">{item.amount}</td>
                       <td>
-                        <Badge
-                          className={
-                            item.status === "Completed"
-                              ? "bg-green-100 text-green-700"
-                              : "bg-yellow-100 text-yellow-700"
-                          }
-                        >
+                        <Badge className="bg-green-100 text-green-700">
                           {item.status}
                         </Badge>
                       </td>
                       <td>
-                        <Link to={`donation/${i}`}>
+                        <Link to={`donation/${item.id}`}>
                           <Button className="bg-blue-600 hover:bg-blue-700 text-white">
                             View
                           </Button>
                         </Link>
-
                       </td>
                     </tr>
                   ))}
@@ -193,4 +251,3 @@ const DonorDashboard = () => {
 };
 
 export default DonorDashboard;
-

@@ -1,9 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Search,
   Download,
   Eye,
-  CheckCircle,
   Calendar,
   ChevronLeft,
   ChevronRight,
@@ -22,45 +21,52 @@ import {
 import { Badge } from "@/components/ui/badge";
 import DonorNavbar from "@/components/layout/DonorNavbar";
 
-const receipts = [
-  {
-    id: "REC-948521",
-    txnId: "TXN-1029384",
-    date: "Oct 25, 2023",
-    amount: "$250.00",
-    project: "Clean Water Initiative",
-    status: "Verified",
-  },
-  {
-    id: "REC-948520",
-    txnId: "TXN-1029383",
-    date: "Oct 25, 2023",
-    amount: "$50.00",
-    project: "Education Fund",
-    status: "Pending",
-  },
-  {
-    id: "REC-948519",
-    txnId: "TXN-1029383",
-    date: "Sep 12, 2023",
-    amount: "$250.00",
-    project: "Clean Water Initiative",
-    status: "Verified",
-  },
-  { id: "REC-948521", txnId: "TXN-1029384", date: "Oct 25, 2023", amount: "$250.00", project: "Clean Water Initiative", status: "Verified" },
-  { id: "REC-948520", txnId: "TXN-1029383", date: "Oct 25, 2023", amount: "$50.00", project: "Education Fund", status: "Pending" },
-  { id: "REC-948519", txnId: "TXN-1029383", date: "Sep 12, 2023", amount: "$250.00", project: "Clean Water Initiative", status: "Verified" },
-  { id: "REC-948518", txnId: "TXN-1029383", date: "Sep 12, 2023", amount: "$50.00", project: "Education Fund", status: "Pending" },
-  { id: "REC-948517", txnId: "TXN-1029387", date: "Sep 12, 2023", amount: "$100.00", project: "Clean Water Initiative", status: "Verified" },
-  { id: "REC-948516", txnId: "TXN-1029386", date: "Sep 12, 2023", amount: "$250.00", project: "Clean Water Initiative", status: "Verified" },
-  { id: "REC-948521", txnId: "TXN-1029385", date: "Sep 12, 2023", amount: "$50.00", project: "Education Fund", status: "Pending" },
-  { id: "REC-948521", txnId: "TXN-1029384", date: "Sep 12, 2023", amount: "$250.00", project: "Clean Water Initiative", status: "Verified" },
-  { id: "REC-948520", txnId: "TXN-1029383", date: "Sep 12, 2023", amount: "$50.00", project: "Education Fund", status: "Pending" },
-
-];
-
 const DonorReceipts = () => {
   const [searchTerm, setSearchTerm] = useState("");
+  const [receipts, setReceipts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchReceipts = async () => {
+      try {
+        const res = await fetch("http://localhost:4000/api/receipts/all", {
+          credentials: "include",
+        });
+        const data = await res.json();
+
+        if (res.ok && data.success) {
+          const formattedReceipts = data.receipts.map((r) => ({
+            id: r.receipt,
+            txnId: r.transactionId,
+            date: new Date(r.createdAt).toLocaleDateString(),
+            amount:
+              r.type === "financial"
+                ? "₹" + (r.amount || 0)
+                : "In-Kind Donation",
+            project: r.type === "financial" ? "Financial Donation" : "In-Kind Donation",
+            status: "Verified",
+            pdfLink: r.pdfLink,
+          }));
+
+          setReceipts(formattedReceipts);
+        }
+      } catch (error) {
+        console.error("Failed to fetch receipts", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchReceipts();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        Loading receipts...
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-muted/30">
@@ -117,52 +123,52 @@ const DonorReceipts = () => {
             </thead>
 
             <tbody>
-              {receipts.map((r) => (
-                <tr key={r.id} className="border-t hover:bg-muted/40">
-                  <td className="px-6 py-4">{r.date}</td>
-                  <td className="px-6 py-4 font-medium">{r.id}</td>
-                  <td className="px-6 py-4">{r.txnId}</td>
-                  <td className="px-6 py-4">{r.amount}</td>
-                  <td className="px-6 py-4">{r.project}</td>
-                  <td className="px-6 py-4">
-                    <Badge
-                      className={
-                        r.status === "Verified"
-                          ? "bg-green-100 text-green-700"
-                          : "bg-yellow-100 text-yellow-700"
-                      }
-                    >
-                      {r.status}
-                    </Badge>
-                  </td>
-                  <td className="px-6 py-4 flex gap-2">
-                    <Link to={`/verify/${r.id}`}>
-                      <Button variant="outline" size="sm">
-                        <Eye className="h-3 w-3 mr-1" />
-                        View
-                      </Button>
-                    </Link>
+              {receipts
+                .filter(
+                  (r) =>
+                    r.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    r.project.toLowerCase().includes(searchTerm.toLowerCase())
+                )
+                .map((r) => (
+                  <tr key={r.id} className="border-t hover:bg-muted/40">
+                    <td className="px-6 py-4">{r.date}</td>
+                    <td className="px-6 py-4 font-medium">{r.id}</td>
+                    <td className="px-6 py-4">{r.txnId}</td>
+                    <td className="px-6 py-4">{r.amount}</td>
+                    <td className="px-6 py-4">{r.project}</td>
+                    <td className="px-6 py-4">
+                      <Badge className="bg-green-100 text-green-700">{r.status}</Badge>
+                    </td>
+                    <td className="px-6 py-4 flex gap-2">
+                      <Link to={`/verify/${r.id}`}>
+                        <Button variant="outline" size="sm">
+                          <Eye className="h-3 w-3 mr-1" />
+                          View
+                        </Button>
+                      </Link>
 
-                    <Button variant="outline" size="sm">
-                      <Download className="h-3 w-3 mr-1" />
-                      PDF
-                    </Button>
-
-                    <Button size="sm">
-                      <CheckCircle className="h-3 w-3 mr-1" />
-                      Verify
-                    </Button>
-                  </td>
-                </tr>
-              ))}
+                      {r.pdfLink ? (
+                        <a href={r.pdfLink} download>
+                          <Button variant="outline" size="sm">
+                            <Download className="h-3 w-3 mr-1" />
+                            PDF
+                          </Button>
+                        </a>
+                      ) : (
+                        <Button variant="outline" size="sm" disabled>
+                          <Download className="h-3 w-3 mr-1" />
+                          PDF
+                        </Button>
+                      )}
+                    </td>
+                  </tr>
+                ))}
             </tbody>
           </table>
 
           {/* Pagination */}
           <div className="flex justify-between items-center px-6 py-4 border-t">
-            <span className="text-sm text-muted-foreground">
-              Page 1 of 5
-            </span>
+            <span className="text-sm text-muted-foreground">Page 1 of 5</span>
             <div className="flex gap-2">
               <Button variant="outline" size="sm">
                 <ChevronLeft className="h-4 w-4 mr-1" />
