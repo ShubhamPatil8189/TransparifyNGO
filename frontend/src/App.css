@@ -1,20 +1,4 @@
-/* Remove any unwanted outer spacing
-.dashboard-root,
-.dashboard-root * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+html {
+  overflow-y: scroll;
+   scrollbar-gutter: stable;
 }
-
-/* Make sure the page itself has zero top margin 
-.dashboard-body {
-  margin: 0 !important;
-  padding: 0 !important;
-}
-
-/* Remove any space above the navbar 
-.dashboard-header {
-  margin-top: 0 !important;
-  padding-top: 0 !important;
-  top: 0 !important;
-} */

@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner"; // for notifications
+import { PublicHeader } from "@/components/layout/PublicHeader";
 
 export default function DonorRegister() {
   const navigate = useNavigate();
@@ -124,73 +125,7 @@ export default function DonorRegister() {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       {/* HEADER */}
-      <header
-        className="sticky top-0 z-50"
-        style={{
-          background:
-            "linear-gradient(135deg, hsl(199, 89%, 30%) 0%, hsl(160, 84%, 30%) 100%)",
-        }}
-      >
-        <div className="flex items-center justify-between px-6 py-3 max-w-7xl mx-auto text-white">
-          <Link to="/" className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center">
-              <svg
-                className="w-6 h-6 text-white"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                aria-hidden
-              >
-                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
-              </svg>
-            </div>
-            <div>
-              <h1 className="font-semibold text-lg">TransparifyNGO</h1>
-              <div className="text-xs text-white/80">
-                Financial Management & Transparency
-              </div>
-            </div>
-          </Link>
-
-          <nav className="hidden md:flex items-center gap-4">
-            <Link
-              to="/dashboard"
-              className="px-3 py-2 text-sm rounded-md hover:bg-white/10"
-            >
-              Dashboard
-            </Link>
-            <Link
-              to="/all-campaigns"
-              className="px-3 py-2 text-sm rounded-md hover:bg-white/10"
-            >
-              Campaigns
-            </Link>
-            <Link
-              to="/donor-list"
-              className="px-3 py-2 text-sm rounded-md hover:bg-white/10"
-            >
-              Donors
-            </Link>
-            <Link
-              to="/reports"
-              className="px-3 py-2 text-sm rounded-md hover:bg-white/10"
-            >
-              Reports
-            </Link>
-          </nav>
-
-          <div className="flex items-center gap-3">
-            <Link to="/help">
-              <Button
-                variant="outline"
-                size="sm"
-                className="border-blue-500 text-blue-500 hover:bg-blue-500/10"
-              >
-                Support
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </header>
+      <PublicHeader/>
 
       {/* Main Content */}
       <main className="flex-1 flex items-center justify-center p-6">

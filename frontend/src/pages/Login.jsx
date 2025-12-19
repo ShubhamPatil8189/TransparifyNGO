@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useAuth } from "@/context/AuthContext"; // assume you have AuthContext
+import { PublicHeader } from "@/components/layout/PublicHeader";
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
@@ -52,58 +53,7 @@ export default function Login() {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       {/* HEADER */}
-      <header
-        className="sticky top-0 z-50"
-        style={{
-          background:
-            "linear-gradient(135deg, hsl(199, 89%, 30%) 0%, hsl(160, 84%, 30%) 100%)",
-        }}
-      >
-        <div className="flex items-center justify-between px-6 py-3 max-w-7xl mx-auto text-white">
-          <Link to="/" className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center">
-              <svg className="w-6 h-6 text-white" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
-              </svg>
-            </div>
-            <div>
-              <h1 className="font-semibold text-lg">TransparifyNGO</h1>
-              <div className="text-xs text-white/80">
-                Financial Management & Transparency
-              </div>
-            </div>
-          </Link>
-
-          <nav className="hidden md:flex items-center gap-4">
-            <Link to="/dashboard" className="px-3 py-2 text-sm rounded-md hover:bg-white/10">
-              Dashboard
-            </Link>
-            <Link to="/all-campaigns" className="px-3 py-2 text-sm rounded-md hover:bg-white/10">
-              Campaigns
-            </Link>
-            <Link to="/donor-list" className="px-3 py-2 text-sm rounded-md hover:bg-white/10">
-              Donors
-            </Link>
-            <Link to="/reports" className="px-3 py-2 text-sm rounded-md hover:bg-white/10">
-              Reports
-            </Link>
-          </nav>
-
-          <div className="flex items-center gap-3">
-            <button className="hidden md:flex items-center gap-2 px-3 py-2 rounded-md bg-white/10 hover:bg-white/12 text-sm">
-              <Search className="w-4 h-4" />
-              <span className="hidden sm:inline">Search</span>
-            </button>
-
-            <Link to="/help">
-              <Button variant="outline" size="sm" className="border-blue-500 text-blue-500">
-                <HelpCircle className="w-4 h-4 mr-2" />
-                Support
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </header>
+      <PublicHeader/>
 
       {/* MAIN */}
       <main className="flex-1 flex items-center justify-center p-6">

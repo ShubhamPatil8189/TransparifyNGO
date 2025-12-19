@@ -10,10 +10,13 @@ import { useAuth } from "@/context/AuthContext"; // assuming you have AuthContex
 const navItems = [
   { label: "Dashboard", path: "/dashboard" },
   { label: "Campaigns", path: "/campaigns" },
+  {label:"Beneficiaries", path: "/beneficiaries"},
   { label: "Transactions", path: "/transactions" },
   { label: "Donors", path: "/donor-list" },
-  { label: "Reports", path: "/home" },
+  { label: "Inventory", path: "/inventory" },
   { label: "Services", path: "/services" },
+  // { label: "Help", path: "/help" },
+
 ];
 
 export default function DashboardHeader({ title = "TransparifyNGO", subtitle = "" }) {

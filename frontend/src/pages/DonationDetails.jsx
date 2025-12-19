@@ -2,6 +2,8 @@ import { Link } from "react-router-dom";
 import { CheckCircle, Download, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Footer } from "@/components/layout/Footer";
+import DashboardHeader from "@/components/layout/DashboardHeader";
+import DonorNavbar from "@/components/layout/DonorNavbar";
 
 const navItems = [
   { label: "Dashboard", path: "/dashboard" },
@@ -13,7 +15,8 @@ export default function DonationDetails() {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       {/* Header */}
-      <header className="nav-header text-primary-foreground">
+      <DonorNavbar/>
+       {/* <header className="nav-header text-primary-foreground">
         <div className="flex items-center justify-between px-6 py-4">
           <div className="flex items-center gap-8">
             <Link to="/" className="flex items-center gap-2">
@@ -47,7 +50,7 @@ export default function DonationDetails() {
             <span className="text-sm">John Doe</span>
           </div>
         </div>
-      </header>
+      </header>  */}
 
       {/* Main Content */}
       <main className="flex-1 p-6">

@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { DollarSign, Users, FileText, Heart, BarChart3, Receipt } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { PublicHeader } from "@/components/layout/PublicHeader";
 
 const campaigns = [
   {
@@ -38,70 +39,9 @@ const LandingPage = () => {
       className="min-h-screen bg-background"
       style={{ margin: 0, padding: 0 }}
     >
-      {/* FIXED HEADER */}
-      <header
-        style={{
-          position: "fixed",
-          top: 0,
-          left: 0,
-          right: 0,
-          height: `${HEADER_HEIGHT}px`,
-          zIndex: 9999,
-          margin: 0,
-          padding: 0,
-          background:
-            "linear-gradient(135deg, hsl(199, 89%, 30%) 0%, hsl(160, 84%, 30%) 100%)",
-        }}
-      >
-        <div
-          className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center justify-between text-white"
-          style={{ margin: 0 }}
-        >
-          <Link to="/" className="flex items-center gap-2">
-            <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
-              <Heart className="h-6 w-6 text-white" />
-            </div>
-            <div>
-              <span className="font-bold text-white">TransparifyNGO</span>
-              <span className="block text-xs text-white/80">NGO Network</span>
-            </div>
-          </Link>
-
-          <nav className="hidden md:flex items-center gap-8">
-            <Link to="/all-campaigns" className="text-white font-medium hover:text-white/80">
-              Campaign
-            </Link>
-            <Link to="/about" className="text-white/80 hover:text-white">
-              About
-            </Link>
-            <Link to="/contact" className="text-white/80 hover:text-white">
-              Contact
-            </Link>
-          </nav>
-
-          <div className="flex items-center gap-3">
-            <Link to="/login">
-              <Button
-                variant="outline"
-                size="sm"
-                className="border-blue-500 text-blue-500 hover:bg-blue-500/10"
-              >
-                Login
-              </Button>
-            </Link>
-
-            <Link to="/donate">
-              <Button
-                variant="outline"
-                size="sm"
-                className="border-blue-500 text-blue-500 hover:bg-blue-500/10"
-              >
-                Donate Now
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </header>
+      <PublicHeader/>
+      
+      
 
       {/* MAIN — add top padding equal to HEADER_HEIGHT so content begins below fixed header */}
       <main style={{ paddingTop: `${HEADER_HEIGHT}px` }}>

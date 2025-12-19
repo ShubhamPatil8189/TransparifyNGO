@@ -1,4 +1,5 @@
 // TransactionDetails.jsx
+import DashboardHeader from "@/components/layout/DashboardHeader";
 import React from "react";
 import { Link } from "react-router-dom";
 
@@ -39,30 +40,9 @@ export default function TransactionDetails() {
     <div className="min-h-screen bg-slate-50">
 
       {/* ⭐ NEW GRADIENT HEADER (Dashboard Style) */}
-      <header
-        className="sticky top-0 z-50 py-3 px-6"
-        style={{
-          background:
-            "linear-gradient(135deg, hsl(199, 89%, 30%) 0%, hsl(160, 84%, 30%) 100%)",
-        }}
-      >
-        <div className="flex items-center justify-between text-white">
+     
 
-          {/* Logo + Title */}
-          <div className="flex items-center gap-3">
-            <img src={GOOGLE_LOGO} className="w-9 h-9 rounded-md bg-white/10 p-1" alt="logo" />
-            <div>
-              <h2 className="font-semibold text-lg">TransparifyNGO</h2>
-              <p className="text-xs text-white/80">Financial Transparency</p>
-            </div>
-          </div>
-
-          {/* Breadcrumb */}
-          {/* <div className="hidden md:block text-sm text-white/80">
-            Dashboard → Transactions → <span className="text-white">Details</span>
-          </div> */}
-        </div> 
-      </header>
+          <DashboardHeader/>
 
       {/* MAIN CONTENT */}
       <main className="grid grid-cols-1 lg:grid-cols-3 gap-6 p-6">

@@ -1,4 +1,81 @@
 import { Link } from "react-router-dom";
+import { HelpCircle, Search, Heart } from "lucide-react";
+import { Button } from "@/components/ui/button";
+
+export const PublicHeader = () => {
+  return (
+    <header
+      className="sticky top-0 z-50"
+      style={{
+        background:
+          "linear-gradient(135deg, hsl(199, 89%, 30%) 0%, hsl(160, 84%, 30%) 100%)",
+      }}
+    >
+      <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-4 text-white">
+        {/* Logo */}
+        <Link to="/" className="flex items-center gap-2">
+          <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
+            <Heart className="w-6 h-6 text-white" />
+          </div>
+          <div>
+            <h1 className="font-bold text-lg">TransparifyNGO</h1>
+            <p className="text-xs text-white/80">
+              Financial Management & Transparency
+            </p>
+          </div>
+        </Link>
+
+        {/* Navigation */}
+        <nav className="hidden md:flex items-center gap-6">
+          <Link
+            to="/all-public-compaign"
+            className="text-sm text-white/80 hover:text-white"
+          >
+            Campaigns
+          </Link>
+          <Link
+            to="/about"
+            className="text-sm text-white/80 hover:text-white"
+          >
+            About
+          </Link>
+          <Link
+            to="/help"
+            className="text-sm text-white/80 hover:text-white"
+          >
+            Help
+          </Link>
+        </nav>
+
+        {/* Actions */}
+        <div className="flex items-center gap-3">
+          <Link to="/login">
+            <Button
+              variant="outline"
+              size="sm"
+              className="border-blue-500 text-blue-500 hover:bg-blue-500/10"
+            >
+              Admin Login
+            </Button>
+          </Link>
+
+          <Link to="/donate">
+            <Button
+              variant="outline"
+              size="sm"
+              className="border-blue-500 text-blue-500 hover:bg-blue-500/10"
+            >
+              Donate Now
+            </Button>
+          </Link>
+        </div>
+      </div>
+    </header>
+  );
+};
+
+
+/*import { Link } from "react-router-dom";
 import { HelpCircle, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -13,7 +90,7 @@ export const PublicHeader = () => {
       }}
     >
       <div className="flex items-center justify-between px-6 py-3 max-w-7xl mx-auto text-white">
-        {/* left: logo + title */}
+    
         <Link to="/" className="flex items-center gap-3">
           <div className="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center">
             <svg
@@ -33,35 +110,26 @@ export const PublicHeader = () => {
           </div>
         </Link>
 
-        {/* center: nav (hidden on small) */}
         <nav className="hidden md:flex items-center gap-4">
           <Link
-            to="/dashboard"
+            to="/"
             className="px-3 py-2 text-sm rounded-md hover:bg-white/10"
           >
-            Dashboard
+            DashBoard
           </Link>
           <Link
-            to="/all-campaigns"
+            to="/about"
             className="px-3 py-2 text-sm rounded-md hover:bg-white/10"
           >
-            Campaigns
+            About
           </Link>
           <Link
-            to="/donor-list"
+            to="/userhelp"
             className="px-3 py-2 text-sm rounded-md hover:bg-white/10"
           >
-            Donors
-          </Link>
-          <Link
-            to="/reports"
-            className="px-3 py-2 text-sm rounded-md hover:bg-white/10"
-          >
-            Reports
+            Help
           </Link>
         </nav>
-
-        {/* right: search (small icon), support */}
         <div className="flex items-center gap-3">
           <button
             className="hidden md:flex items-center gap-2 px-3 py-2 rounded-md bg-white/10 hover:bg-white/12 text-white text-sm"
@@ -85,5 +153,7 @@ export const PublicHeader = () => {
         </div>
       </div>
     </header>
+    
   );
 };
+*/
