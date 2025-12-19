@@ -61,8 +61,9 @@ const DonorNavbar = () => {
             {[
               ["/donor-dashboard", "Dashboard"],
               ["/all-campaigns", "Explore NGOs"],
-              ["/donor-receipts", "My Impact"],
-              ["/settings", "Settings"],
+              ["/donor-receipts", "My Receipts"],
+              ["/donar-donation","Donation"],
+              ["/userhelp", "Help"],
             ].map(([path, label]) => (
               <Link
                 key={path}

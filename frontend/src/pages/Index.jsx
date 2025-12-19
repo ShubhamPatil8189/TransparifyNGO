@@ -1,57 +1,12 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Shield, BarChart3, Users, Heart } from "lucide-react";
+import { PublicHeader } from "@/components/layout/PublicHeader";
 
 export default function Index() {
   return (
     <div className="min-h-screen bg-background">
-      {/* Header - changed to dashboard gradient */}
-      <header
-        className="sticky top-0 z-50"
-        style={{
-          background:
-            "linear-gradient(135deg, hsl(199, 89%, 30%) 0%, hsl(160, 84%, 30%) 100%)",
-        }}
-      >
-        <div className="container mx-auto flex items-center justify-between px-6 py-4 text-white">
-          <Link to="/" className="flex items-center gap-2">
-            <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
-              <Heart className="w-6 h-6 text-white" />
-            </div>
-            <div>
-              <h1 className="font-bold text-xl text-white">transparifyNGO</h1>
-              <p className="text-xs text-white/80">Financial Management & Transparency</p>
-            </div>
-          </Link>
-
-          <nav className="hidden md:flex items-center gap-6">
-            <Link to="/all-campaigns" className="text-sm text-white/80 hover:text-white">Campaigns</Link>
-            <Link to="/landing" className="text-sm text-white/80 hover:text-white">About</Link>
-            <Link to="/contact" className="text-sm text-white/80 hover:text-white">Contact</Link>
-          </nav>
-
-          <div className="flex items-center gap-3">
-           <Link to="/login">
-  <Button
-                variant="outline"
-                size="sm"
-                className="border-blue-500 text-blue-500 hover:bg-blue-500/10"
-              >
-    Admin Login
-  </Button>
-</Link>
-            <Link to="/register">
-              <Button
-                variant="outline"
-                size="sm"
-                className="border-blue-500 text-blue-500 hover:bg-blue-500/10"
-              >
-                Donate Now
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </header>
+      <PublicHeader/>
 
      <section className="bg-gray-50 text-gray-900 py-20">
   <div className="container mx-auto px-6 text-center">
@@ -136,9 +91,12 @@ export default function Index() {
             <Link to="/beneficiaries" className="bg-card border border-border rounded-lg p-4 text-center hover:border-primary transition-colors">
               <p className="font-medium">Beneficiaries</p>
             </Link>
-            <Link to="/audit-logs" className="bg-card border border-border rounded-lg p-4 text-center hover:border-primary transition-colors">
-              <p className="font-medium">Audit Logs</p>
+             <Link to="/inventory" className="bg-card border border-border rounded-lg p-4 text-center hover:border-primary transition-colors">
+              <p className="font-medium">Inventory</p>
             </Link>
+            {/* <Link to="/audit-logs" className="bg-card border border-border rounded-lg p-4 text-center hover:border-primary transition-colors">
+              <p className="font-medium">Audit Logs</p>
+            </Link> */}
           </div>
         </div>
       </section>

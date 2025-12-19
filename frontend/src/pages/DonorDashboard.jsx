@@ -10,6 +10,8 @@ import {
   Tooltip,
 } from "recharts";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+
 
 const badges = [
   { icon: Shield, label: "Champion Donor", color: "bg-primary" },
@@ -45,114 +47,145 @@ const DonorDashboard = () => {
 
   return (
     <div className="min-h-screen bg-muted/30">
-      {/* Navbar */}
       <DonorNavbar userName={userName} />
 
-      {/* Hero */}
+      {/* HERO */}
       <section
-        className="py-10 text-white"
+        className="py-12 text-white"
         style={{
           background:
             "linear-gradient(135deg, hsl(160, 85%, 35%) 0%, hsl(120, 70%, 55%) 100%)",
         }}
       >
         <div className="max-w-7xl mx-auto px-4">
-          <h1 className="text-3xl font-bold mb-2">
+          <h1 className="text-3xl md:text-4xl font-bold">
             Welcome back, {userName || "Donor"} 👋
           </h1>
-          <p className="text-white/80">
-            Your generosity is making a difference.
+          <p className="text-white/80 mt-1">
+            Your generosity is creating real impact.
           </p>
 
-          <div className="flex gap-4 mt-6">
+          {/* Badges */}
+          <div className="flex flex-wrap gap-6 mt-8">
             {badges.map((badge, i) => {
               const Icon = badge.icon;
               return (
-                <div key={i} className="flex flex-col items-center">
+                <div key={i} className="flex items-center gap-3">
                   <div
-                    className={`${badge.color} w-14 h-14 rounded-full flex items-center justify-center`}
+                    className={`${badge.color} w-12 h-12 rounded-full flex items-center justify-center shadow`}
                   >
-                    <Icon className="h-7 w-7 text-white" />
+                    <Icon className="h-6 w-6 text-white" />
                   </div>
-                  <span className="text-sm mt-1">{badge.label}</span>
+                  <span className="text-sm font-medium">{badge.label}</span>
                 </div>
               );
             })}
           </div>
 
-          <div className="flex gap-6 mt-8">
-            <div className="bg-white/10 px-6 py-4 rounded-lg text-center">
-              <div className="text-sm text-white/70">Total Donated</div>
-              <div className="text-3xl font-bold">₹{totalDonated}</div>
+          {/* Stats */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-10 max-w-md">
+            <div className="bg-white/15 backdrop-blur px-6 py-5 rounded-xl">
+              <p className="text-sm text-white/70">Total Donated</p>
+              <p className="text-3xl font-bold mt-1">₹{totalDonated}</p>
             </div>
-            <div className="bg-white/10 px-6 py-4 rounded-lg text-center">
-              <div className="text-sm text-white/70">Donations</div>
-              <div className="text-3xl font-bold">{totalCount}</div>
+            <div className="bg-white/15 backdrop-blur px-6 py-5 rounded-xl">
+              <p className="text-sm text-white/70">Total Donations</p>
+              <p className="text-3xl font-bold mt-1">{totalCount}</p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Main */}
-      <main className="max-w-7xl mx-auto px-4 py-8">
+      {/* MAIN */}
+      <main className="max-w-7xl mx-auto px-4 py-10 space-y-8">
         {/* Timeline */}
-        <div className="bg-card rounded-lg p-6 mb-8">
-          <h2 className="text-xl font-bold mb-2">Your Impact Timeline</h2>
-          <div className="h-64">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={timelineData}>
-                <XAxis dataKey="month" />
-                <YAxis />
-                <Tooltip />
-                <Line
-                  type="monotone"
-                  dataKey="amount"
-                  stroke="hsl(var(--primary))"
-                  strokeWidth={2}
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
+        <div className="bg-card rounded-xl border p-6">
+          <h2 className="text-xl font-semibold mb-4">
+            Your Impact Timeline
+          </h2>
+
+          {timelineData.length === 0 ? (
+            <p className="text-muted-foreground text-sm">
+              No donation data available yet.
+            </p>
+          ) : (
+            <div className="h-64">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={timelineData}>
+                  <XAxis dataKey="month" />
+                  <YAxis />
+                  <Tooltip />
+                  <Line
+                    type="monotone"
+                    dataKey="amount"
+                    stroke="hsl(var(--primary))"
+                    strokeWidth={3}
+                    dot={{ r: 4 }}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          )}
         </div>
 
-        {/* Donations */}
-        <div className="bg-card rounded-lg p-6">
-          <h2 className="text-xl font-bold mb-4">
+        {/* Donation History */}
+        <div className="bg-card rounded-xl border p-6">
+          <h2 className="text-xl font-semibold mb-4">
             Recent Donation History
           </h2>
 
-          <table className="w-full">
-            <thead>
-              <tr className="border-b">
-                <th>Date</th>
-                <th>NGO</th>
-                <th>Project</th>
-                <th>Amount</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {donations.map((item, i) => (
-                <tr key={i} className="border-b">
-                  <td>{item.date}</td>
-                  <td>{item.ngo}</td>
-                  <td>{item.project}</td>
-                  <td className="font-medium">{item.amount}</td>
-                  <td>
-                    <Badge
-                      className={
-                        item.status === "Completed"
-                          ? "bg-green-100 text-green-700"
-                          : "bg-yellow-100 text-yellow-700"
-                      }
+          {donations.length === 0 ? (
+            <p className="text-muted-foreground text-sm">
+              You haven’t made any donations yet.
+            </p>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b text-muted-foreground">
+                    <th className="py-3 text-left">Date</th>
+                    <th className="py-3 text-left">NGO</th>
+                    <th className="py-3 text-left">Project</th>
+                    <th className="py-3 text-left">Amount</th>
+                    <th className="py-3 text-left">Status</th>
+                    <th className="py-3 text-left">Details</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {donations.map((item, i) => (
+                    <tr
+                      key={i}
+                      className="border-b last:border-0 hover:bg-muted/40 transition"
                     >
-                      {item.status}
-                    </Badge>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                      <td className="py-3">{item.date}</td>
+                      <td>{item.ngo}</td>
+                      <td>{item.project}</td>
+                      <td className="font-medium">{item.amount}</td>
+                      <td>
+                        <Badge
+                          className={
+                            item.status === "Completed"
+                              ? "bg-green-100 text-green-700"
+                              : "bg-yellow-100 text-yellow-700"
+                          }
+                        >
+                          {item.status}
+                        </Badge>
+                      </td>
+                      <td>
+                        <Link to={`donation/${i}`}>
+                          <Button className="bg-blue-600 hover:bg-blue-700 text-white">
+                            View
+                          </Button>
+                        </Link>
+
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
       </main>
     </div>
@@ -160,3 +193,4 @@ const DonorDashboard = () => {
 };
 
 export default DonorDashboard;
+

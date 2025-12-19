@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { CheckCircle, Copy, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import DonorNavbar from "@/components/layout/DonorNavbar";
 
 const ReceiptVerification = () => {
   const verificationHash =
@@ -16,40 +17,7 @@ const ReceiptVerification = () => {
     <div className="min-h-screen bg-gradient-to-b from-primary/5 to-background flex flex-col">
 
       {/* ⭐ STICKY NAVBAR WITH GRADIENT + DASHBOARD BUTTON */}
-      <header
-        className="sticky top-0 z-50 border-b"
-        style={{
-          background:
-            "linear-gradient(135deg, hsl(199, 89%, 30%) 0%, hsl(160, 84%, 30%) 100%)",
-          margin: 0,
-          padding: 0,
-        }}
-      >
-        <div
-          className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between"
-        >
-          {/* Logo + Title */}
-          <Link to="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
-              <CheckCircle className="h-5 w-5 text-white" />
-            </div>
-            <span className="font-bold text-lg text-white">
-              TransparifyNGO
-            </span>
-          </Link>
-
-          {/* ⭐ DASHBOARD BUTTON */}
-          <Link to="/home">
-            <Button
-             variant="outline"
-              size="sm"
-              className="border-blue-500 text-blue-500 hover:bg-blue-500/10"
-            >
-              Dashboard
-            </Button>
-          </Link>
-        </div>
-      </header>
+      <DonorNavbar/>
 
       {/* MAIN CONTENT */}
       <main className="flex-1 flex items-center justify-center px-4 py-12">

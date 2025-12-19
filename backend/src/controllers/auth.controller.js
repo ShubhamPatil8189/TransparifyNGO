@@ -167,10 +167,57 @@ async function validateLogin(req, res) {
 
 
     } catch (error) {
-        console.error("Admin Login Error:", error.message);
+        console.error("Login Error:", error.message);
         res.status(500).json({ message: "Internal Server Error", error });
     }
 };
+
+
+async function validateAdminLogin(req, res) {
+  try {
+    const { email, password } = req.body;
+
+    const user = await User.findOne({ email });
+
+    // User existence
+    if (!user || user.isTemp) {
+      return res.status(404).json({ message: "Admin not found" });
+    }
+
+    // 🔒 ADMIN role check
+    if (!user.roles || !user.roles.includes("ADMIN")) {
+      return res.status(403).json({ message: "Access denied. Admins only." });
+    }
+
+    if (!user.password) {
+      return res.status(400).json({ message: "Password required." });
+    }
+
+    // Password check
+    const isPassValid = await bcrypt.compare(password, user.password);
+    if (!isPassValid) {
+      return res.status(400).json({ message: "Invalid password" });
+    }
+
+    // Create token (you may add role inside token if needed)
+    const token = createToken(user._id);
+
+    res.cookie("jwt", token, {
+      ...cookieOptions,
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
+    res.status(200).json({
+      userId: user._id,
+      user: user.name,
+    });
+
+  } catch (error) {
+    console.error("Admin Login Error:", error.message);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+}
+
 
 
 async function registerTempUser(req, res) {
@@ -292,5 +339,6 @@ module.exports = {
     validateRegister,
     logoutUser,
     registerTempUser,
-    validateForgotPass
+    validateForgotPass,
+    validateAdminLogin
 };

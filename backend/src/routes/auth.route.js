@@ -6,7 +6,8 @@ const {
   logoutUser, 
   registerTempUser, 
   sendOTP,
-  validateForgotPass
+  validateForgotPass,
+  validateAdminLogin
 } = require('../controllers/auth.controller.js');
 
 const authMiddleware = require('../middleware/auth.middleware.js');
@@ -18,6 +19,7 @@ router.get("/checkAuth", authMiddleware.verifyToken, (req, res) => {
   });
 });
 router.post('/login', authMiddleware.checkLogin, validateLogin);
+router.post('/loginAdmin', authMiddleware.checkLogin, validateAdminLogin);
 router.post('/registerTemp', authMiddleware.checkTempRegister, registerTempUser);
 router.post('/register', authMiddleware.checkRegister, validateRegister);
 router.post('/forgotpass', authMiddleware.checkForgotPass, validateForgotPass);

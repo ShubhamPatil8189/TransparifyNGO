@@ -1,183 +1,147 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import { Share2, Play, DollarSign } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useParams, Link } from "react-router-dom";
+import axios from "axios";
+import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { cn } from "@/lib/utils";
+import DashboardHeader from "@/components/layout/DashboardHeader";
 import { Footer } from "@/components/layout/Footer";
+import EditCampaignModal from "@/components/modals/EditCampaignModal"; // <-- import modal
 
-const donors = [
-  { name: "Maria G.", amount: "$100" },
-  { name: "Ahmed K.", amount: "$50" },
-  { name: "Sarah L.", amount: "$250" },
-  { name: "David P.", amount: "$75" },
-  { name: "Priya S.", amount: "$500" },
-];
+export default function CampaignDetail() {
+  const { id } = useParams();
+  const [campaign, setCampaign] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [showEdit, setShowEdit] = useState(false); // <-- modal state
 
-const galleryImages = [
-  "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=200",
-  "https://images.unsplash.com/photo-1594708767771-a5c4d7a7c3a7?w=200",
-  "https://images.unsplash.com/photo-1541802645635-11f2286a7482?w=200",
-  "https://images.unsplash.com/photo-1578496781985-452d4a934d50?w=200",
-];
+  const API_BASE_URL = "http://localhost:4000/api";
 
-const amountOptions = ["$50", "$100", "$250", "Other"];
+  useEffect(() => {
+    const fetchCampaign = async () => {
+      try {
+        const res = await axios.get(`${API_BASE_URL}/campaign/${id}`, {
+          withCredentials: true,
+        });
+        setCampaign(res.data);
+      } catch (err) {
+        console.error("Failed to fetch campaign details", err);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-const CampaignDetail = () => {
-  const [selectedAmount, setSelectedAmount] = useState("$100");
-  const [customAmount, setCustomAmount] = useState("100");
+    fetchCampaign();
+  }, [id]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <DashboardHeader />
+        <main className="flex-1 flex justify-center items-center">
+          <p>Loading campaign details...</p>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (!campaign) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <DashboardHeader />
+        <main className="flex-1 flex justify-center items-center">
+          <p>Campaign not found.</p>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  const goalAmount = campaign.goalAmount ?? 0;
+  const collectedAmount = campaign.collectedAmount ?? 0;
+  const percentage = Math.round((collectedAmount / goalAmount) * 100) || 0;
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="bg-card border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2">
-            <DollarSign className="h-6 w-6 text-primary" />
-            <span className="font-bold text-lg">NGO Transparency Platform</span>
-          </Link>
-          
-          <nav className="flex items-center gap-8">
-            <Link to="/dashboard" className="text-muted-foreground hover:text-foreground">Dashboard</Link>
-            <Link to="/all-campaigns" className="text-muted-foreground hover:text-foreground">Campaigns</Link>
-            <Link to="/reports" className="text-muted-foreground hover:text-foreground">Reports</Link>
-            <Link to="/about" className="text-muted-foreground hover:text-foreground">About</Link>
-            <Link to="/profile" className="text-muted-foreground hover:text-foreground">Profile</Link>
-          </nav>
-        </div>
-      </header>
-      
-      {/* Hero Banner */}
-      <div className="relative h-80 bg-gradient-to-r from-primary/80 to-secondary/80">
-        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=1200')] bg-cover bg-center mix-blend-overlay" />
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex flex-col justify-end pb-8">
-          <h1 className="text-4xl font-bold text-white mb-2">Clean Water for Rural Communities</h1>
-          
-          <div className="flex items-center gap-4 mb-4">
-            <div className="bg-secondary h-2 rounded-full w-64">
-              <div className="bg-primary h-2 rounded-full" style={{ width: "76%" }} />
-            </div>
-            <span className="text-white font-medium">76% Funded</span>
-            <span className="text-white/80">- $37,500 raised of $50,000 goal</span>
+    <div className="min-h-screen bg-background flex flex-col">
+      <DashboardHeader />
+
+      <main className="flex-1 flex justify-center p-6">
+        <div className="w-full max-w-3xl bg-card rounded-lg border border-border p-8 space-y-6">
+          {/* Header */}
+          <div className="flex items-center justify-between">
+            <h1 className="text-2xl font-bold">{campaign.title || "Untitled Campaign"}</h1>
+            <Link to="/campaigns" className="text-primary hover:underline flex items-center gap-1">
+              <ArrowLeft className="w-4 h-4" />
+              Back to Campaigns
+            </Link>
           </div>
-          
-          <div className="flex gap-4">
-            <Button className="bg-secondary hover:bg-secondary/90 text-secondary-foreground">
-              Donate Now
-            </Button>
-            <Button variant="outline" className="border-white text-white hover:bg-white/10">
-              <Share2 className="h-4 w-4 mr-2" />
-              Share
-            </Button>
-          </div>
-        </div>
-      </div>
-      
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-          {/* Left Column - Campaign Details */}
-          <div className="lg:col-span-2">
-            <h2 className="text-2xl font-bold mb-4">Campaign Details</h2>
-            
-            <div className="mb-8">
-              <h3 className="font-semibold text-lg mb-2">Description</h3>
-              <p className="text-muted-foreground mb-4">
-                This campaign aims to provide sustainable clean water access to over 5,000 people in rural areas. 
-                Iworas. Your donation supports drilling wells, installing pumps, and community training for maintenance.
-              </p>
-              <p className="text-muted-foreground">Every dollar brings health and hope.</p>
-            </div>
-            
-            <div className="mb-8">
-              <h3 className="font-semibold text-lg mb-4">Impact Gallery</h3>
-              <div className="grid grid-cols-4 gap-4">
-                {galleryImages.map((img, index) => (
-                  <div key={index} className="relative aspect-square rounded-lg overflow-hidden group cursor-pointer">
-                    <img src={img} alt={`Impact ${index + 1}`} className="w-full h-full object-cover" />
-                    {index > 0 && (
-                      <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-                        <Play className="h-8 w-8 text-white" />
-                      </div>
-                    )}
-                  </div>
-                ))}
+
+          {/* Campaign Details */}
+          <div className="space-y-4">
+            {campaign.bannerUrl && (
+              <img
+                src={campaign.bannerUrl}
+                alt="Campaign Banner"
+                className="w-full h-64 object-cover rounded-lg"
+              />
+            )}
+
+            <div className="flex justify-between flex-wrap gap-4">
+              <div>
+                <p className="text-sm text-muted-foreground">Status</p>
+                <p className="font-medium capitalize">{campaign.status || "N/A"}</p>
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground">Goal Amount</p>
+                <p className="font-medium">₹{goalAmount.toLocaleString()}</p>
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground">Collected</p>
+                <p className="font-medium">₹{collectedAmount.toLocaleString()}</p>
               </div>
             </div>
-            
+
             <div>
-              <h3 className="font-semibold text-lg mb-4">Recent Donors</h3>
-              <ul className="space-y-2">
-                {donors.map((donor, index) => (
-                  <li key={index} className="text-muted-foreground">
-                    • {donor.name} - {donor.amount}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-          
-          {/* Right Column - Donation Form */}
-          <div>
-            <div className="bg-card rounded-lg p-6 sticky top-8">
-              <div className="bg-secondary text-secondary-foreground text-center py-3 rounded-lg mb-6">
-                <h3 className="font-semibold">Support Our Cause</h3>
+              <p className="text-sm text-muted-foreground mb-1">Progress</p>
+              <div className="w-full h-4 bg-muted rounded-full overflow-hidden">
+                <div className="h-full bg-primary" style={{ width: `${Math.min(percentage, 100)}%` }} />
               </div>
-              
-              <div className="space-y-4">
-                <div>
-                  <label className="text-sm font-medium mb-2 block">Donation Amount</label>
-                  <Input
-                    type="text"
-                    value={`$${customAmount}`}
-                    onChange={(e) => setCustomAmount(e.target.value.replace(/\$/g, ""))}
-                    className="text-center text-lg font-medium"
-                  />
-                </div>
-                
-                <div className="flex gap-2">
-                  {amountOptions.map((amount) => (
-                    <button
-                      key={amount}
-                      onClick={() => {
-                        setSelectedAmount(amount);
-                        if (amount !== "Other") setCustomAmount(amount.replace("$", ""));
-                      }}
-                      className={cn(
-                        "flex-1 py-2 rounded-lg border text-sm font-medium transition-colors",
-                        selectedAmount === amount
-                          ? "bg-secondary text-secondary-foreground border-secondary"
-                          : "border-border hover:border-primary"
-                      )}
-                    >
-                      {amount}
-                    </button>
-                  ))}
-                </div>
-                
-                <div className="space-y-3 pt-4">
-                  <Button variant="outline" className="w-full h-12 justify-center">
-                    <span className="font-bold text-purple-600">UPI</span>
-                  </Button>
-                  <Button variant="outline" className="w-full h-12 justify-center">
-                    <span className="font-bold text-purple-600">stripe</span>
-                  </Button>
-                  <Button variant="outline" className="w-full h-12 justify-center">
-                    <span className="font-bold text-blue-600">Razorpay</span>
-                  </Button>
-                </div>
-                
-                <Button className="w-full h-12 bg-secondary hover:bg-secondary/90 text-secondary-foreground">
-                  Donate Securely
-                </Button>
+              <p className="text-xs mt-1">{percentage}%</p>
+            </div>
+
+            <div className="flex gap-4">
+              <div>
+                <p className="text-sm text-muted-foreground">Start Date</p>
+                <p className="font-medium">{campaign.startDate ? new Date(campaign.startDate).toLocaleDateString() : "N/A"}</p>
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground">End Date</p>
+                <p className="font-medium">{campaign.endDate ? new Date(campaign.endDate).toLocaleDateString() : "N/A"}</p>
               </div>
             </div>
+
+            <div>
+              <p className="text-sm text-muted-foreground mb-1">Description</p>
+              <p className="whitespace-pre-line">{campaign.description || "No description provided."}</p>
+            </div>
           </div>
+
+          {/* Actions */}
+          <div className="flex justify-end">
+            <Button onClick={() => setShowEdit(true)}>Edit Campaign</Button>
+          </div>
+
+          {/* Edit Campaign Modal */}
+          {showEdit && (
+            <EditCampaignModal
+              campaign={campaign}
+              onClose={() => setShowEdit(false)}
+              onUpdate={(updatedCampaign) => setCampaign(updatedCampaign)}
+            />
+          )}
         </div>
       </main>
-      
+
       <Footer />
     </div>
   );
-};
-
-export default CampaignDetail;
+}

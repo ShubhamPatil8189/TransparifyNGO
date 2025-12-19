@@ -1,15 +1,15 @@
-// src/pages/NGODashboard.jsx
+// src/pages/DonorDetailsDashboard.jsx
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 
 /**
- * NGODashboard (full file)
+ * DonorDetailsDashboard (full file)
  * - Top navbar uses inline gradient: linear-gradient(135deg, hsl(199, 89%, 30%) 0%, hsl(160, 84%, 30%) 100%)
  * - No external CSS changes required
  * - Uses Link + useLocation for navigation and active state
  */
 
-export default function NGODashboard() {
+export default function DonarDetailsDashBoard() {
   const location = useLocation();
   const isActive = (path) => location.pathname === path;
 
@@ -68,13 +68,13 @@ export default function NGODashboard() {
             </div>
 
             {/* center: nav links (horizontal) */}
-            <div className="hidden md:flex md:items-center md:space-x-1">
+            {/* <div className="hidden md:flex md:items-center md:space-x-1">
               <NavLink2 to="/dashboard" active={isActive("/dashboard")}>Dashboard</NavLink2>
               <NavLink2 to="/tasks" active={isActive("/tasks")}>Tasks</NavLink2>
               <NavLink2 to="/inventory" active={isActive("/inventory")}>Inventory</NavLink2>
               <NavLink2 to="/reports" active={isActive("/reports")}>Reports</NavLink2>
               <NavLink2 to="/transactions" active={isActive("/transactions")}>Transactions</NavLink2>
-            </div>
+            </div> */}
 
             {/* right: actions + avatar */}
             <div className="flex items-center gap-3">

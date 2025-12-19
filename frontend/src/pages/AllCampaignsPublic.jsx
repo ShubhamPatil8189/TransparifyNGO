@@ -38,12 +38,12 @@ const campaigns = [
   },
 ];
 
-export default function AllCampaigns() {
+export default function AllCampaignsPublic() {
   const [goalCompletion, setGoalCompletion] = useState([0]);
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      <DonorNavbar />
+      <PublicHeader />
       
       <main className="flex-1">
         {/* Breadcrumb */}
@@ -53,7 +53,7 @@ export default function AllCampaigns() {
 
         <div className="flex">
           {/* Sidebar Filters */}
-          <aside className="w-64 p-4 border-r border-border bg-card">
+          <aside className="w-64 p-6 border-r border-border bg-card">
             <h2 className="font-semibold mb-4">Filters</h2>
             
             <div className="space-y-6">

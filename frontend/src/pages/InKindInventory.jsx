@@ -25,7 +25,7 @@ const InKindInventory = () => {
       
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Breadcrumb */}
-        <nav className="text-sm text-muted-foreground mb-4">
+        {/* <nav className="text-sm text-muted-foreground mb-4">
           <Link to="/dashboard" className="hover:text-foreground">Dashboard</Link>
           {" > "}
           <Link to="/transactions" className="hover:text-foreground">Transactions</Link>
@@ -33,7 +33,7 @@ const InKindInventory = () => {
           <span className="hover:text-foreground">Inventory</span>
           {" > "}
           <span className="text-foreground font-medium">In-Kind Inventory</span>
-        </nav>
+        </nav> */}
         
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-foreground">In-Kind Inventory</h1>
