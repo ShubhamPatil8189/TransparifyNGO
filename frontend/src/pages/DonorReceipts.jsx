@@ -43,7 +43,10 @@ const DonorReceipts = () => {
               r.type === "financial"
                 ? "₹" + (r.amount || 0)
                 : "In-Kind Donation",
-            project: r.type === "financial" ? "Financial Donation" : "In-Kind Donation",
+            project:
+              r.type === "financial"
+                ? "Financial Donation"
+                : "In-Kind Donation",
             status: "Verified",
             pdfLink: r.pdfLink,
           }));
@@ -93,7 +96,9 @@ const DonorReceipts = () => {
                 <Calendar className="h-4 w-4 mr-2" />
                 <SelectValue placeholder="Date Range" />
               </SelectTrigger>
-              <SelectContent>
+
+              {/* ✅ White background overlay fix */}
+              <SelectContent className="bg-white">
                 <SelectItem value="6months">Last 6 Months</SelectItem>
                 <SelectItem value="1year">Last Year</SelectItem>
                 <SelectItem value="all">All Time</SelectItem>
@@ -124,11 +129,19 @@ const DonorReceipts = () => {
 
             <tbody>
               {receipts
-                .filter(
-                  (r) =>
-                    r.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                    r.project.toLowerCase().includes(searchTerm.toLowerCase())
-                )
+                .filter((r) => {
+                  const words = searchTerm
+                    .toLowerCase()
+                    .split(" ")
+                    .filter(Boolean);
+
+                  return words.some(
+                    (word) =>
+                      r.id.toLowerCase().includes(word) ||
+                      r.project.toLowerCase().includes(word) ||
+                      r.txnId.toLowerCase().includes(word)
+                  );
+                })
                 .map((r) => (
                   <tr key={r.id} className="border-t hover:bg-muted/40">
                     <td className="px-6 py-4">{r.date}</td>
@@ -137,7 +150,9 @@ const DonorReceipts = () => {
                     <td className="px-6 py-4">{r.amount}</td>
                     <td className="px-6 py-4">{r.project}</td>
                     <td className="px-6 py-4">
-                      <Badge className="bg-green-100 text-green-700">{r.status}</Badge>
+                      <Badge className="bg-green-100 text-green-700">
+                        {r.status}
+                      </Badge>
                     </td>
                     <td className="px-6 py-4 flex gap-2">
                       <Link to={`/verify/${r.id}`}>
@@ -168,7 +183,9 @@ const DonorReceipts = () => {
 
           {/* Pagination */}
           <div className="flex justify-between items-center px-6 py-4 border-t">
-            <span className="text-sm text-muted-foreground">Page 1 of 5</span>
+            <span className="text-sm text-muted-foreground">
+              Page 1 of 5
+            </span>
             <div className="flex gap-2">
               <Button variant="outline" size="sm">
                 <ChevronLeft className="h-4 w-4 mr-1" />

@@ -59,7 +59,7 @@ const LandingPage = () => {
                 </p>
 
                 <div className="flex gap-4">
-                  <Button className="bg-secondary hover:bg-secondary/90 text-secondary-foreground h-12 px-6">
+                  <Button className=" h-12 px-6" variant="outline">
                     Donate Now
                   </Button>
                   <Button variant="outline" className="h-12 px-6">
@@ -133,10 +133,10 @@ const LandingPage = () => {
 
               <div className="text-center">
                 <div className="w-16 h-16 bg-secondary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Users className="h-8 w-8 text-secondary" />
+                  <Users className="h-8 w-8 text-primary" />
                 </div>
                 <p className="text-sm text-muted-foreground">Beneficiaries Impacted:</p>
-                <p className="text-3xl font-bold text-secondary">120,000+</p>
+                <p className="text-3xl font-bold text-primary">120,000+</p>
               </div>
 
               <div className="text-center">

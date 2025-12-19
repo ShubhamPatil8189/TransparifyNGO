@@ -60,7 +60,7 @@ const DonorNavbar = () => {
           <nav className="hidden md:flex items-center gap-5 text-sm">
             {[
               ["/donor-dashboard", "Dashboard"],
-              ["/all-campaigns", "Explore NGOs"],
+              // ["/all-campaigns", "Explore NGOs"],
               ["/donor-receipts", "My Receipts"],
               ["/donar-donation","Donation"],
               ["/userhelp", "Help"],
