@@ -32,16 +32,17 @@ const DonorReceipts = () => {
         const res = await fetch("http://localhost:4000/api/receipts/all", {
           credentials: "include",
         });
+
         const data = await res.json();
 
         if (res.ok && data.success) {
           const formattedReceipts = data.receipts.map((r) => ({
             id: r.receipt,
-            txnId: r.transactionId,
+            txnId: r.transactionId || "—",
             date: new Date(r.createdAt).toLocaleDateString(),
             amount:
               r.type === "financial"
-                ? "₹" + (r.amount || 0)
+                ? "₹ Donation"
                 : "In-Kind Donation",
             project:
               r.type === "financial"
@@ -49,6 +50,7 @@ const DonorReceipts = () => {
                 : "In-Kind Donation",
             status: "Verified",
             pdfLink: r.pdfLink,
+            verifyUrl: r.verifyUrl,
           }));
 
           setReceipts(formattedReceipts);
@@ -91,13 +93,12 @@ const DonorReceipts = () => {
               />
             </div>
 
-            <Select defaultValue="6months">
+            <Select defaultValue="all">
               <SelectTrigger className="w-48">
                 <Calendar className="h-4 w-4 mr-2" />
                 <SelectValue placeholder="Date Range" />
               </SelectTrigger>
 
-              {/* ✅ White background overlay fix */}
               <SelectContent className="bg-white">
                 <SelectItem value="6months">Last 6 Months</SelectItem>
                 <SelectItem value="1year">Last Year</SelectItem>
@@ -135,12 +136,14 @@ const DonorReceipts = () => {
                     .split(" ")
                     .filter(Boolean);
 
-                  return words.some(
-                    (word) =>
-                      r.id.toLowerCase().includes(word) ||
-                      r.project.toLowerCase().includes(word) ||
-                      r.txnId.toLowerCase().includes(word)
-                  );
+                  return words.length === 0
+                    ? true
+                    : words.some(
+                        (word) =>
+                          r.id?.toLowerCase().includes(word) ||
+                          r.project?.toLowerCase().includes(word) ||
+                          r.txnId?.toLowerCase().includes(word)
+                      );
                 })
                 .map((r) => (
                   <tr key={r.id} className="border-t hover:bg-muted/40">
@@ -155,15 +158,15 @@ const DonorReceipts = () => {
                       </Badge>
                     </td>
                     <td className="px-6 py-4 flex gap-2">
-                      <Link to={`/verify/${r.id}`}>
+                      <a href={r.verifyUrl} target="_blank" rel="noreferrer">
                         <Button variant="outline" size="sm">
                           <Eye className="h-3 w-3 mr-1" />
                           View
                         </Button>
-                      </Link>
+                      </a>
 
                       {r.pdfLink ? (
-                        <a href={r.pdfLink} download>
+                        <a href={r.pdfLink} target="_blank" rel="noreferrer">
                           <Button variant="outline" size="sm">
                             <Download className="h-3 w-3 mr-1" />
                             PDF
@@ -181,10 +184,10 @@ const DonorReceipts = () => {
             </tbody>
           </table>
 
-          {/* Pagination */}
+          {/* Pagination (UI only) */}
           <div className="flex justify-between items-center px-6 py-4 border-t">
             <span className="text-sm text-muted-foreground">
-              Page 1 of 5
+              Showing {receipts.length} receipts
             </span>
             <div className="flex gap-2">
               <Button variant="outline" size="sm">
