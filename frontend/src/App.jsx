@@ -154,6 +154,10 @@ import AdminProfile from "./pages/AdminProfile";
 import ForgotPass from "./pages/ForgotPassword";
 import DonorDetail from "./pages/DonorDetail";
 import UserHelp from "./pages/UserHelp";
+import Products from "./pages/Products";
+import Shop from "./pages/Shop";
+import Checkout from "./pages/Checkout";
+import MyOrders from "./pages/MyOrders";
 import AllCampaignsPublic from "./pages/AllCampaignsPublic";
 import DonorDonation from "./pages/DonorDonation";
 const queryClient = new QueryClient();
@@ -185,6 +189,9 @@ const App = () => {
           <Route path="/donate" element={<Donate />} />
           <Route path="/donor-profile" element={<DonorProfile />} />
           <Route path="/verify/:id" element={<ReceiptVerification />} />
+          <Route path="/shop" element={<Shop />} />
+        <Route path="/checkout" element={<Checkout />} />
+        <Route path="/my-orders" element={<MyOrders />} />
 
           {/* ---------- ADMIN / NGO ROUTES (NOW PUBLIC) ---------- */}
           <Route path="/dashboard" element={<Dashboard />} />
@@ -207,6 +214,8 @@ const App = () => {
           <Route path="/services" element={<AdminServices />} />
           <Route path="/userhelp" element={<UserHelp/>}/>
           <Route path='/donar-donation' element={<DonorDonation/>}/>
+          <Route path="/products" element={<Products />} />
+          
           {/* ---------- AUDITOR ---------- */}
           <Route path="/auditor" element={<AuditorDashboard />} />
 

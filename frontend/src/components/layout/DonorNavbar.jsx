@@ -1,5 +1,12 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Heart, Menu, User, LogOut, Gift, X } from "lucide-react";
+import {
+  Heart,
+  Menu,
+  User,
+  LogOut,
+  Gift,
+  X,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import axios from "axios";
@@ -13,10 +20,10 @@ const DonorNavbar = () => {
   const [profileOpen, setProfileOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  // ✅ ALWAYS CORRECT INITIAL
-  const userInitial = !loading && user?.user?.name
-    ? user.user.name.charAt(0).toUpperCase()
-    : null;
+  const userInitial =
+    !loading && user?.user?.name
+      ? user.user.name.charAt(0).toUpperCase()
+      : null;
 
   const isActive = (path) =>
     location.pathname === path
@@ -45,8 +52,7 @@ const DonorNavbar = () => {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="h-14 flex items-center justify-between">
-
-          {/* LEFT — Logo */}
+          {/* LOGO */}
           <Link to="/donor-dashboard" className="flex items-center gap-2">
             <div className="w-9 h-9 bg-white/20 rounded-lg flex items-center justify-center">
               <Heart className="h-5 w-5 text-white" />
@@ -56,13 +62,14 @@ const DonorNavbar = () => {
             </span>
           </Link>
 
-          {/* CENTER NAV */}
+          {/* DESKTOP NAV */}
           <nav className="hidden md:flex items-center gap-5 text-sm">
             {[
               ["/donor-dashboard", "Dashboard"],
-              // ["/all-campaigns", "Explore NGOs"],
               ["/donor-receipts", "My Receipts"],
-              ["/donar-donation","Donation"],
+              ["/donar-donation", "Donation"],
+              ["/shop", "Shop"],
+              ["/my-orders", "My Orders"],
               ["/userhelp", "Help"],
             ].map(([path, label]) => (
               <Link
@@ -94,30 +101,38 @@ const DonorNavbar = () => {
             </button>
 
             {profileOpen && (
-              <div className="absolute right-0 top-12 w-40 bg-white text-black rounded-lg shadow-lg">
+              <div className="absolute right-0 top-12 w-40 bg-white text-black rounded-lg shadow-lg overflow-hidden">
                 <button
                   onClick={() => {
                     setProfileOpen(false);
                     navigate("/donor-profile");
                   }}
-                  className="flex items-center gap-2 px-4 py-2 hover:bg-muted w-full"
+                  className="px-4 py-2 hover:bg-gray-100 w-full text-left"
                 >
-                  <User className="h-4 w-4" />
                   Profile
                 </button>
 
                 <button
-                  onClick={handleLogout}
-                  className="flex items-center gap-2 px-4 py-2 hover:bg-muted w-full text-red-500"
+                  onClick={() => {
+                    setProfileOpen(false);
+                    navigate("/my-orders");
+                  }}
+                  className="px-4 py-2 hover:bg-gray-100 w-full text-left"
                 >
-                  <LogOut className="h-4 w-4" />
+                  My Orders
+                </button>
+
+                <button
+                  onClick={handleLogout}
+                  className="px-4 py-2 hover:bg-gray-100 w-full text-left text-red-500 border-t"
+                >
                   Logout
                 </button>
               </div>
             )}
           </div>
 
-          {/* MOBILE */}
+          {/* MOBILE MENU BUTTON */}
           <button
             className="md:hidden p-2 rounded-md hover:bg-white/20"
             onClick={() => setMobileOpen(!mobileOpen)}
@@ -126,24 +141,48 @@ const DonorNavbar = () => {
           </button>
         </div>
 
+        {/* MOBILE MENU */}
         {mobileOpen && (
-          <div className="md:hidden py-4 space-y-3 text-sm">
-            <Link to="/donor-dashboard">Dashboard</Link>
-            <Link to="/all-campaigns">Explore NGOs</Link>
-            <Link to="/donor-receipts">My Impact</Link>
-            <Link to="/settings">Settings</Link>
+          <div className="md:hidden py-4 space-y-2 text-sm">
+            {[
+              ["/donor-dashboard", "Dashboard"],
+              ["/donor-receipts", "My Receipts"],
+              ["/donar-donation", "Donation"],
+              ["/shop", "Shop"],
+              ["/my-orders", "My Orders"],
+              ["/userhelp", "Help"],
+            ].map(([path, label]) => (
+              <Link
+                key={path}
+                to={path}
+                className="block px-3 py-2 rounded-md hover:bg-white/20"
+                onClick={() => setMobileOpen(false)}
+              >
+                {label}
+              </Link>
+            ))}
 
-            <Button onClick={() => navigate("/donate")} className="w-full">
-              Donate
-            </Button>
+            <div className="pt-2 border-t border-white/20 space-y-2">
+              <Button
+                onClick={() => {
+                  navigate("/donate");
+                  setMobileOpen(false);
+                }}
+                className="w-full bg-white/20 hover:bg-white/30"
+              >
+                <Gift className="h-4 w-4 mr-2" />
+                Donate
+              </Button>
 
-            <Button
-              onClick={handleLogout}
-              variant="destructive"
-              className="w-full"
-            >
-              Logout
-            </Button>
+              <Button
+                onClick={handleLogout}
+                variant="destructive"
+                className="w-full"
+              >
+                <LogOut className="h-4 w-4 mr-2" />
+                Logout
+              </Button>
+            </div>
           </div>
         )}
       </div>
