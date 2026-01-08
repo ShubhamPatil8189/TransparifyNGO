@@ -16,7 +16,7 @@ async def predict_impact(data: dict = Body(...)):
     # Enhance with AI
     if GEMINI_API_KEY:
         try:
-            model = genai.GenerativeModel('gemini-1.5-flash')
+            model = genai.GenerativeModel('gemini-2.5-flash')
             prompt = f"""Predict the real-world impact of donating ₹{amount} to an NGO focused on {category}.
             
             Provide a concise, inspiring prediction that shows tangible outcomes.
