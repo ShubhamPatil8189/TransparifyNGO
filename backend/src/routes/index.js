@@ -16,5 +16,7 @@ router.use('/donor', donorRoutes);
 router.use('/products', productRoutes);
 router.use('/cart', cartRoutes);
 router.use('/orders', orderRoutes);
+router.use('/dashboard', require('./dashboard.route'));
+router.use('/public', require('./public.route'));
 
 module.exports = router;

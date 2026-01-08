@@ -40,6 +40,12 @@ export const PublicHeader = () => {
             About
           </Link>
           <Link
+            to="/transparency"
+            className="text-sm text-white/80 hover:text-white"
+          >
+            Transparency Wall
+          </Link>
+          <Link
             to="/help"
             className="text-sm text-white/80 hover:text-white"
           >

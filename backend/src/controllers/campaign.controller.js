@@ -11,15 +11,15 @@ const listNGOCampaigns = async (req, res) => {
       const now = new Date();
       let status;
 
-    // If campaign is marked completed in DB → force Ended
-    if (campaign.status === "completed") {
-      status = "Ended";
-    } else {
-      status =
-        now >= campaign.createdAt && now <= campaign.deadline
-          ? "Active"
-          : "Ended";
-    }
+      // If campaign is marked completed in DB → force Ended
+      if (campaign.status === "completed") {
+        status = "Ended";
+      } else {
+        status =
+          now >= campaign.createdAt && now <= campaign.deadline
+            ? "Active"
+            : "Ended";
+      }
 
       return {
         _id: campaign._id,
@@ -154,7 +154,7 @@ const donateToCampaign = async (req, res) => {
     // ===============================
     // 4. Create Transaction
     // ===============================
-    const transactionData = { type, donor, createdAt: new Date() };
+    const transactionData = { type, donor, campaign: campaign._id, createdAt: new Date() };
     if (type === "financial") {
       transactionData.amount = Number(amount);
       transactionData.paymentMethod = paymentMethod;

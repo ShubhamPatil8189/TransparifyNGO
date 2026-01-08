@@ -17,6 +17,7 @@ const TransactionSchema = new mongoose.Schema({
   providerRef: { type: String },                   // Razorpay payment ID if financial
   items: [ItemSchema],                             // only for in-kind donations
   receipt: { type: String },
+  campaign: { type: mongoose.Schema.Types.ObjectId, ref: 'Campaign' }, // Link to campaign
   createdAt: { type: Date, default: Date.now },
 });
 

@@ -35,10 +35,11 @@ const transactions = [
   },
 ];
 
-export function RecentTransactions() {
+export function RecentTransactions({ transactions = [] }) {
   const getStatusClass = (status) => {
-    switch (status.toLowerCase()) {
+    switch (status?.toLowerCase()) {
       case "cleared":
+      case "success":
         return "status-cleared";
       case "pending":
         return "status-pending";
@@ -61,27 +62,39 @@ export function RecentTransactions() {
             <TableHead>Date</TableHead>
             <TableHead>Donor/Source</TableHead>
             <TableHead>Type</TableHead>
-            <TableHead>Campaign</TableHead>
             <TableHead>Amount</TableHead>
             <TableHead>Status</TableHead>
           </TableRow>
         </TableHeader>
 
         <TableBody>
-          {transactions.map((tx, index) => (
-            <TableRow key={index}>
-              <TableCell className="text-sm">{tx.date}</TableCell>
-              <TableCell className="text-sm">{tx.donor}</TableCell>
-              <TableCell className="text-sm">{tx.type}</TableCell>
-              <TableCell className="text-sm">{tx.campaign}</TableCell>
-              <TableCell className="text-sm font-medium">{tx.amount}</TableCell>
-              <TableCell>
-                <span className={`status-badge ${getStatusClass(tx.status)}`}>
-                  {tx.status}
-                </span>
+          {transactions.length > 0 ? (
+            transactions.map((tx, index) => (
+              <TableRow key={index}>
+                <TableCell className="text-sm">
+                  {tx.createdAt ? new Date(tx.createdAt).toLocaleDateString() : "N/A"}
+                </TableCell>
+                <TableCell className="text-sm">{tx.donor?.name || "Unknown"}</TableCell>
+                <TableCell className="text-sm">{tx.type}</TableCell>
+                <TableCell className="text-sm font-medium">
+                  {tx.type === "in-kind"
+                    ? `₹${(tx.items?.reduce((acc, item) => acc + (item.estimatedValue || 0), 0) || 0).toLocaleString()} (Est.)`
+                    : `₹${(tx.amount || 0).toLocaleString()}`}
+                </TableCell>
+                <TableCell>
+                  <span className={`status-badge ${getStatusClass(tx.status || "cleared")}`}>
+                    {tx.status || "Cleared"}
+                  </span>
+                </TableCell>
+              </TableRow>
+            ))
+          ) : (
+            <TableRow>
+              <TableCell colSpan={6} className="text-center py-4">
+                No recent transactions found.
               </TableCell>
             </TableRow>
-          ))}
+          )}
         </TableBody>
       </Table>
     </div>

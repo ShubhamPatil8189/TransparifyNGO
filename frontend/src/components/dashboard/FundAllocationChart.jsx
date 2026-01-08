@@ -7,7 +7,7 @@ const data = [
   { name: "Reserves", value: 10, color: "hsl(var(--chart-red))" },
 ];
 
-export function FundAllocationChart() {
+export function FundAllocationChart({ data = [] }) {
   return (
     <div className="dashboard-card p-6">
       <h3 className="font-semibold mb-4">Fund Allocation</h3>

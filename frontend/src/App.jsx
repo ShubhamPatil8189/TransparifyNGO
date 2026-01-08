@@ -160,6 +160,9 @@ import Checkout from "./pages/Checkout";
 import MyOrders from "./pages/MyOrders";
 import AllCampaignsPublic from "./pages/AllCampaignsPublic";
 import DonorDonation from "./pages/DonorDonation";
+import TransparencyWall from "./pages/TransparencyWall";
+import ProtectedRoute from "./auth/ProtectedRoute";
+
 const queryClient = new QueryClient();
 
 const App = () => {
@@ -181,41 +184,46 @@ const App = () => {
           <Route path="/donor-register" element={<DonorReg />} />
           <Route path="/forgot-password" element={<ForgotPass />} />
           <Route path="/help" element={<HelpSupport />} />
-          <Route path="/all-public-compaign" element={<AllCampaignsPublic/>}/>
+          <Route path="/all-public-compaign" element={<AllCampaignsPublic />} />
+          <Route path="/transparency" element={<TransparencyWall />} />
 
-          {/* ---------- DONOR ROUTES (NOW PUBLIC) ---------- */}
-          <Route path="/donor-dashboard" element={<DonorDashboard />} />
-          <Route path="/donor-receipts" element={<DonorReceipts />} />
-          <Route path="/donate" element={<Donate />} />
-          <Route path="/donor-profile" element={<DonorProfile />} />
-          <Route path="/verify/:id" element={<ReceiptVerification />} />
-          <Route path="/shop" element={<Shop />} />
-        <Route path="/checkout" element={<Checkout />} />
-        <Route path="/my-orders" element={<MyOrders />} />
+          {/* ---------- DONOR PROTECTED ---------- */}
+          <Route element={<ProtectedRoute />}>
+            <Route path="/donor-dashboard" element={<DonorDashboard />} />
+            <Route path="/donor-receipts" element={<DonorReceipts />} />
+            <Route path="/donate" element={<Donate />} />
+            <Route path="/donor-profile" element={<DonorProfile />} />
+            <Route path="/verify/:id" element={<ReceiptVerification />} />
+            <Route path="/shop" element={<Shop />} />
+            <Route path="/checkout" element={<Checkout />} />
+            <Route path="/my-orders" element={<MyOrders />} />
+            <Route path='/donar-donation' element={<DonorDonation />} />
+          </Route>
 
-          {/* ---------- ADMIN / NGO ROUTES (NOW PUBLIC) ---------- */}
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/admin-profile" element={<AdminProfile />} />
-          <Route path="/audit-logs" element={<AuditLogs />} />
-          <Route path="/beneficiaries" element={<Beneficiaries />} />
-          <Route path="/all-campaigns" element={<AllCampaigns />} />
-          <Route path="/campaigns" element={<CampaignManagement />} />
-          <Route path="/campaigns/create" element={<CreateCampaign />} />
-          <Route path="/campaign/:id" element={<CampaignDetail />} />
-          <Route path="/donation/:id" element={<DonationDetails />} />
-          <Route path="/transactions" element={<TransactionsList />} />
-          <Route path="/transactions/details/:id" element={<TransactionDetails />} />
-          <Route path="/inventory" element={<InKindInventory />} />
-          <Route path="/inventory/add" element={<AddInKindItem />} />
-          <Route path="/settings" element={<Dashboard />} />
-          <Route path="/donor-details-dashboard" element={<DonorDetailsDashboard />} />
-          <Route path="/donor-list" element={<DonorsList />} />
-          <Route path="/donor/:id" element={<DonorDetail />} />
-          <Route path="/services" element={<AdminServices />} />
-          <Route path="/userhelp" element={<UserHelp/>}/>
-          <Route path='/donar-donation' element={<DonorDonation/>}/>
-          <Route path="/products" element={<Products />} />
-          
+          {/* ---------- ADMIN / NGO PROTECTED ---------- */}
+          <Route element={<ProtectedRoute role="ADMIN" />}>
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/admin-profile" element={<AdminProfile />} />
+            <Route path="/audit-logs" element={<AuditLogs />} />
+            <Route path="/beneficiaries" element={<Beneficiaries />} />
+            <Route path="/all-campaigns" element={<AllCampaigns />} />
+            <Route path="/campaigns" element={<CampaignManagement />} />
+            <Route path="/campaigns/create" element={<CreateCampaign />} />
+            <Route path="/campaign/:id" element={<CampaignDetail />} />
+            <Route path="/donation/:id" element={<DonationDetails />} />
+            <Route path="/transactions" element={<TransactionsList />} />
+            <Route path="/transactions/details/:id" element={<TransactionDetails />} />
+            <Route path="/inventory" element={<InKindInventory />} />
+            <Route path="/inventory/add" element={<AddInKindItem />} />
+            <Route path="/settings" element={<Dashboard />} />
+            <Route path="/donor-details-dashboard" element={<DonorDetailsDashboard />} />
+            <Route path="/donor-list" element={<DonorsList />} />
+            <Route path="/donor/:id" element={<DonorDetail />} />
+            <Route path="/services" element={<AdminServices />} />
+            <Route path="/userhelp" element={<UserHelp />} />
+            <Route path="/products" element={<Products />} />
+          </Route>
+
           {/* ---------- AUDITOR ---------- */}
           <Route path="/auditor" element={<AuditorDashboard />} />
 

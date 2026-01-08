@@ -15,15 +15,15 @@ const data = [
   { month: "Dec", income: 30000, spend: 22000 },
 ];
 
-export function FinancialChart() {
+export function FinancialChart({ data = [] }) {
   return (
     <div className="dashboard-card p-6">
       <div className="flex items-center justify-between mb-4">
         <h3 className="font-semibold">Financial Overview</h3>
-        <span className="text-xs bg-muted px-2 py-1 rounded">Current Month</span>
+        <span className="text-xs bg-muted px-2 py-1 rounded">Last 6 Months</span>
       </div>
 
-      <p className="text-sm text-muted-foreground mb-4">Income vs. Spend (YTD)</p>
+      <p className="text-sm text-muted-foreground mb-4">Income vs. Spend</p>
 
       <div className="h-64">
         <ResponsiveContainer width="100%" height="100%">
@@ -39,7 +39,7 @@ export function FinancialChart() {
             <YAxis
               tick={{ fontSize: 12 }}
               stroke="hsl(var(--muted-foreground))"
-              tickFormatter={(value) => `$${value / 1000}k`}
+              tickFormatter={(value) => `₹${value / 1000}k`}
             />
 
             <Tooltip
@@ -48,7 +48,7 @@ export function FinancialChart() {
                 border: "1px solid hsl(var(--border))",
                 borderRadius: "8px"
               }}
-              formatter={(value) => [`$${value.toLocaleString()}`, ""]}
+              formatter={(value) => [`₹${value.toLocaleString()}`, ""]}
             />
 
             <Legend />

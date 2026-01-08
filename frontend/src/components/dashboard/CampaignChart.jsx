@@ -7,7 +7,7 @@ const data = [
   { name: "Food Security", value: 2500, color: "hsl(var(--chart-orange))" }
 ];
 
-export function CampaignChart() {
+export function CampaignChart({ data = [] }) {
   return (
     <div className="dashboard-card p-6">
       <h3 className="font-semibold mb-2">Campaign Performance</h3>
@@ -27,7 +27,7 @@ export function CampaignChart() {
               type="number"
               tick={{ fontSize: 12 }}
               stroke="hsl(var(--muted-foreground))"
-              tickFormatter={(value) => `$${value.toLocaleString()}`}
+              tickFormatter={(value) => `₹${value.toLocaleString()}`}
             />
 
             <YAxis
@@ -44,12 +44,12 @@ export function CampaignChart() {
                 border: "1px solid hsl(var(--border))",
                 borderRadius: "8px"
               }}
-              formatter={(value) => [`$${value.toLocaleString()}`, "Donations"]}
+              formatter={(value) => [`₹${value.toLocaleString()}`, "Donations"]}
             />
 
             <Bar dataKey="value" radius={[0, 4, 4, 0]}>
               {data.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={entry.color} />
+                <Cell key={`cell-${index}`} fill={entry.color || "hsl(var(--primary))"} />
               ))}
             </Bar>
           </BarChart>
