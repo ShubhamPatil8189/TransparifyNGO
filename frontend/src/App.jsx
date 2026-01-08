@@ -161,6 +161,8 @@ import MyOrders from "./pages/MyOrders";
 import AllCampaignsPublic from "./pages/AllCampaignsPublic";
 import DonorDonation from "./pages/DonorDonation";
 import TransparencyWall from "./pages/TransparencyWall";
+import AIAnalytics from "./pages/AIAnalytics";
+import AIChatbot from "./components/AIChatbot";
 import ProtectedRoute from "./auth/ProtectedRoute";
 
 const queryClient = new QueryClient();
@@ -224,12 +226,18 @@ const App = () => {
             <Route path="/products" element={<Products />} />
           </Route>
 
+          {/* ---------- ADMIN ONLY: AI Analytics ---------- */}
+          <Route element={<ProtectedRoute allowedRoles={["ADMIN"]} />}>
+            <Route path="/ai-analytics" element={<AIAnalytics />} />
+          </Route>
+
           {/* ---------- AUDITOR ---------- */}
           <Route path="/auditor" element={<AuditorDashboard />} />
 
           {/* ---------- FALLBACK ---------- */}
           <Route path="*" element={<NotFound />} />
         </Routes>
+        <AIChatbot />
       </TooltipProvider>
     </QueryClientProvider>
   );

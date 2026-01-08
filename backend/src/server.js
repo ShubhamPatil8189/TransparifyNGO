@@ -17,6 +17,7 @@ const receiptPdfRoute = require("./routes/receiptPdf");
 const inventory = require("./routes/inventoryRoutes");
 const transparency = require("./routes/publicTransparency");
 const receipts = require("./routes/receipts");
+const aiRoutes = require("./routes/ai.route");
 
 dotenv.config();
 
@@ -70,6 +71,7 @@ app.use("/api/receipts", receiptVerifyRoute);
 app.use("/api/receipts", receiptPdfRoute);
 app.use("/api/inventory", inventory);
 app.use("/api/public-transparency", transparency);
+app.use("/api/ai", aiRoutes);
 
 // MongoDB
 mongoose.connect(process.env.CONNECTIONSTRING)

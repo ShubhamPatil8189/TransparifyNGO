@@ -1,13 +1,14 @@
 import { Link, useLocation } from "react-router-dom";
-import { 
-  LayoutDashboard, 
-  Users, 
-  Receipt, 
-  FileText, 
-  Settings, 
-  HelpCircle, 
+import {
+  LayoutDashboard,
+  Users,
+  Receipt,
+  FileText,
+  Settings,
+  HelpCircle,
   LogOut,
-  Heart
+  Heart,
+  Brain
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -16,6 +17,7 @@ const menuItems = [
   { icon: Users, label: "Beneficiaries", path: "/beneficiaries" },
   { icon: Receipt, label: "Transactions", path: "/transactions" },
   { icon: FileText, label: "Reports", path: "/reports" },
+  { icon: Brain, label: "AI Insights", path: "/ai-analytics" },
   { icon: Settings, label: "Settings", path: "/settings" },
 ];
 
@@ -44,11 +46,10 @@ export function Sidebar() {
             <Link
               key={item.path}
               to={item.path}
-              className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-                isActive
+              className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${isActive
                   ? "bg-primary text-primary-foreground"
                   : "text-foreground hover:bg-muted"
-              }`}
+                }`}
             >
               <Icon className="w-5 h-5" />
               {item.label}

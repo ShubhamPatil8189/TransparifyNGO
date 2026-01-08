@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Search, Bell, User, ChevronDown } from "lucide-react";
+import { Search, Bell, User, ChevronDown, Brain } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
@@ -10,12 +10,13 @@ import { useAuth } from "@/context/AuthContext"; // assuming you have AuthContex
 const navItems = [
   { label: "Dashboard", path: "/dashboard" },
   { label: "Campaigns", path: "/campaigns" },
-  {label:"Beneficiaries", path: "/beneficiaries"},
+  { label: "Beneficiaries", path: "/beneficiaries" },
   { label: "Transactions", path: "/transactions" },
   { label: "Donors", path: "/donor-list" },
   { label: "Inventory", path: "/inventory" },
-  { label: "Products", path: "/products" }, 
+  { label: "Products", path: "/products" },
   { label: "Services", path: "/services" },
+  { label: "AI Insights", path: "/ai-analytics", icon: Brain },
   // { label: "Help", path: "/help" },
 
 ];
@@ -66,12 +67,12 @@ export default function DashboardHeader({ title = "TransparifyNGO", subtitle = "
               <Link
                 key={item.path}
                 to={item.path}
-                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                  location.pathname === item.path
+                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors flex items-center gap-2 ${location.pathname === item.path
                     ? "bg-primary-foreground/20"
                     : "hover:bg-primary-foreground/10"
-                }`}
+                  }`}
               >
+                {item.icon && <item.icon className="w-4 h-4" />}
                 {item.label}
               </Link>
             ))}
@@ -105,22 +106,22 @@ export default function DashboardHeader({ title = "TransparifyNGO", subtitle = "
             </button>
 
             {dropdownOpen && (
-            <div className="absolute right-0 mt-2 w-48 bg-white text-blue-600 rounded-md shadow-lg border border-border z-50">
-              <Link
-                to="/admin-profile"
-                className="block px-4 py-2 text-sm hover:bg-blue-100"
-                onClick={() => setDropdownOpen(false)}
-              >
-                Profile
-              </Link>
-              <button
-                className="w-full text-left px-4 py-2 text-sm hover:bg-blue-100"
-                onClick={handleLogout}
-              >
-                Logout
-              </button>
-            </div>
-          )}
+              <div className="absolute right-0 mt-2 w-48 bg-white text-blue-600 rounded-md shadow-lg border border-border z-50">
+                <Link
+                  to="/admin-profile"
+                  className="block px-4 py-2 text-sm hover:bg-blue-100"
+                  onClick={() => setDropdownOpen(false)}
+                >
+                  Profile
+                </Link>
+                <button
+                  className="w-full text-left px-4 py-2 text-sm hover:bg-blue-100"
+                  onClick={handleLogout}
+                >
+                  Logout
+                </button>
+              </div>
+            )}
 
 
           </div>

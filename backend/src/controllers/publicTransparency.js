@@ -274,3 +274,14 @@ exports.generateTransparencyReport = async (req, res) => {
     res.status(500).json({ error: "Failed to generate report" });
   }
 };
+const NGO = require("../models/NGO.model");
+
+exports.listNGOs = async (req, res) => {
+  try {
+    const NGOs = await NGO.find({}, { title: 1, _id: 1 });
+    res.status(200).json(NGOs);
+  } catch (err) {
+    console.error("List NGOs Error:", err);
+    res.status(500).json({ error: "Failed to list NGOs" });
+  }
+};

@@ -1,5 +1,7 @@
-// NGO.js
-const NGO = new Schema({
+const mongoose = require('mongoose');
+const { Schema } = mongoose;
+
+const ngoSchema = new Schema({
   title: { type: String, required: true },
   description: String,
   imageUrl: String,
@@ -11,3 +13,5 @@ const NGO = new Schema({
     openTransparency: { type: Boolean, default: false }
   }
 });
+
+module.exports = mongoose.model('NGO', ngoSchema);
