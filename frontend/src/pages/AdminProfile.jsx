@@ -20,7 +20,7 @@ const AdminProfile = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const res = await axios.get("hhttps://transparifyngo.onrender.com/api/user/me", {
+        const res = await axios.get("https://transparifyngo.onrender.com/api/user/me", {
           withCredentials: true,
         });
         setUser(res.data);
