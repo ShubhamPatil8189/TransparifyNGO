@@ -27,7 +27,7 @@ export default function CampaignManagement() {
     const fetchCampaigns = async () => {
       try {
         const res = await axios.get(
-          "http://localhost:4000/api/campaign/ngos/campaigns",
+          "https://transparifyngo.onrender.com/api/campaign/ngos/campaigns",
           { withCredentials: true }
         );
         setCampaigns(res.data);
@@ -58,7 +58,7 @@ export default function CampaignManagement() {
     if (!window.confirm("Are you sure you want to delete this campaign?")) return;
 
     try {
-      await axios.delete(`http://localhost:4000/api/campaign/${id}`, {
+      await axios.delete(`https://transparifyngo.onrender.com/api/campaign/${id}`, {
         withCredentials: true,
       });
       setCampaigns((prev) => prev.filter((c) => c._id !== id));

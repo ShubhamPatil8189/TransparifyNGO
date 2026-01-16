@@ -21,11 +21,11 @@ const AIAnalytics = () => {
         const fetchData = async () => {
             try {
                 const [trendsRes, fakeRes, donorsRes, fraudScanRes, campaignsRes] = await Promise.all([
-                    axios.get('http://localhost:4000/api/ai/trends/donation-analysis'),
-                    axios.get('http://localhost:4000/api/ai/transparency/fake-detection'),
-                    axios.get('http://localhost:4000/api/ai/trends/donor-behavior'),
-                    axios.get('http://localhost:4000/api/ai/fraud-scan'),
-                    axios.get('http://localhost:4000/api/campaign/ngos/campaigns')
+                    axios.get('https://transparifyngo.onrender.com/api/ai/trends/donation-analysis'),
+                    axios.get('https://transparifyngo.onrender.com/api/ai/transparency/fake-detection'),
+                    axios.get('https://transparifyngo.onrender.com/api/ai/trends/donor-behavior'),
+                    axios.get('https://transparifyngo.onrender.com/api/ai/fraud-scan'),
+                    axios.get('https://transparifyngo.onrender.com/api/campaign/ngos/campaigns')
                 ]);
 
                 setTrends(trendsRes.data);

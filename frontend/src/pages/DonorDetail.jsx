@@ -17,7 +17,7 @@ export default function DonorDetail() {
   const [donor, setDonor] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const API_BASE_URL = "http://localhost:4000/api";
+  const API_BASE_URL = "https://transparifyngo.onrender.com/api";
 
   useEffect(() => {
     const fetchDonor = async () => {

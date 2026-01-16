@@ -32,7 +32,7 @@ const DonorNavbar = () => {
 
   const handleLogout = async () => {
     try {
-      await axios.get("http://localhost:4000/api/auth/logout", {
+      await axios.get("https://transparifyngo.onrender.com/api/auth/logout", {
         withCredentials: true,
       });
       setUser(null);

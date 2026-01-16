@@ -6,7 +6,7 @@ import axios from "axios";
 import { PublicHeader } from "@/components/layout/PublicHeader";
 import { useNavigate } from "react-router-dom";
 
-const API_BASE_URL = "http://localhost:4000";
+const API_BASE_URL = "https://transparifyngo.onrender.com";
 const RESEND_TIME = 180;
 
 const ForgotPassword = () => {

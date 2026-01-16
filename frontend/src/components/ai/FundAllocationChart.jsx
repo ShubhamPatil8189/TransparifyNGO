@@ -30,7 +30,7 @@ const FundAllocationChart = ({
 
         const fetchAllocation = async () => {
             try {
-                const res = await axios.get(`http://localhost:4000/api/ai/transparency/fund-allocation/${campaignId}`);
+                const res = await axios.get(`https://transparifyngo.onrender.com/api/ai/transparency/fund-allocation/${campaignId}`);
                 setAllocationData(res.data);
             } catch (error) {
                 console.error("Error fetching fund allocation:", error);

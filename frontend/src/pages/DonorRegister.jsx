@@ -7,7 +7,7 @@ import { PublicHeader } from "@/components/layout/PublicHeader";
 
 export default function DonorRegister() {
   const navigate = useNavigate();
-  const API_BASE_URL = "http://localhost:4000";
+  const API_BASE_URL = "https://transparifyngo.onrender.com";
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");

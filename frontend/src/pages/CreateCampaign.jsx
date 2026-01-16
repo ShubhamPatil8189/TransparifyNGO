@@ -27,7 +27,7 @@ export default function CreateCampaign() {
   const [deadline, setDeadline] = useState("");
   const [description, setDescription] = useState("");
   const navigate = useNavigate();
-  const API_BASE_URL = "http://localhost:4000/api";
+  const API_BASE_URL = "https://transparifyngo.onrender.com/api";
 
   const handleCreateCampaign = async (status) => {
     if (!title || !description || !goalAmount || !deadline) {

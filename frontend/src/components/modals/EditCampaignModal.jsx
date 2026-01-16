@@ -10,7 +10,7 @@ export default function EditCampaignModal({ campaign, onClose, onUpdate }) {
   const [goalAmount, setGoalAmount] = useState("");
   const [deadline, setDeadline] = useState("");
   const [description, setDescription] = useState("");
-  const API_BASE_URL = "http://localhost:4000/api";
+  const API_BASE_URL = "https://transparifyngo.onrender.com/api";
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {

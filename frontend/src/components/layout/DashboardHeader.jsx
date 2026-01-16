@@ -33,7 +33,7 @@ export default function DashboardHeader({ title = "TransparifyNGO", subtitle = "
   const handleLogout = async () => {
     try {
       await axios.get(
-        "http://localhost:4000/api/auth/logout",
+        "https://transparifyngo.onrender.com/api/auth/logout",
         { withCredentials: true }
       );
       toast.success("Logged out successfully");

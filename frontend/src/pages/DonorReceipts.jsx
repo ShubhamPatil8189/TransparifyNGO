@@ -29,7 +29,7 @@ const DonorReceipts = () => {
   useEffect(() => {
     const fetchReceipts = async () => {
       try {
-        const res = await fetch("http://localhost:4000/api/receipts/all", {
+        const res = await fetch("https://transparifyngo.onrender.com/api/receipts/all", {
           credentials: "include",
         });
 

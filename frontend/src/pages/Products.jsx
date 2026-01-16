@@ -9,7 +9,7 @@ import DashboardHeader from "@/components/layout/DashboardHeader";
 // Configure axios defaults for this component
 axios.defaults.withCredentials = true;
 
-const API = "http://localhost:4000/api/products";
+const API = "https://transparifyngo.onrender.com/api/products";
 
 // Helper function to get token from localStorage as backup
 const getAuthHeaders = () => {

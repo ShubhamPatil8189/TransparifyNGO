@@ -26,7 +26,7 @@ export default function Dashboard() {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const res = await axios.get("http://localhost:4000/api/dashboard/stats", {
+        const res = await axios.get("https://transparifyngo.onrender.com/api/dashboard/stats", {
           withCredentials: true,
         });
         if (res.data.success) {

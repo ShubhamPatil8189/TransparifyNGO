@@ -22,7 +22,7 @@ export default function DonorsList() {
   const [selectedCampaign, setSelectedCampaign] = useState("");
   const [sortBy, setSortBy] = useState("joinedDesc");
 
-  const API_BASE_URL = "http://localhost:4000/api";
+  const API_BASE_URL = "https://transparifyngo.onrender.com/api";
 
   /* ---------- Fetch donors ---------- */
   useEffect(() => {

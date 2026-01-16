@@ -19,7 +19,7 @@ const TrustScoreCard = ({ ngoId }) => {
 
         const fetchTrustScore = async () => {
             try {
-                const res = await axios.get(`http://localhost:4000/api/ai/transparency/trust-score/${ngoId}`);
+                const res = await axios.get(`https://transparifyngo.onrender.com/api/ai/transparency/trust-score/${ngoId}`);
                 setTrustData(res.data);
             } catch (error) {
                 console.error("Error fetching trust score:", error);

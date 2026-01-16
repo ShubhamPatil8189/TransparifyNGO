@@ -13,14 +13,14 @@ const DonorDonation = () => {
     const fetchDonationData = async () => {
       try {
         // Fetch logged-in user
-        const userRes = await fetch("http://localhost:4000/api/user/me", {
+        const userRes = await fetch("https://transparifyngo.onrender.com/api/user/me", {
           credentials: "include",
         });
         const userData = await userRes.json();
         if (userRes.ok) setUser({ name: userData.name || "Donor", totalDonated: 0 });
 
         // Fetch donation overview
-        const donationRes = await fetch("http://localhost:4000/api/donations/overview", {
+        const donationRes = await fetch("https://transparifyngo.onrender.com/api/donations/overview", {
           credentials: "include",
         });
         const donationData = await donationRes.json();

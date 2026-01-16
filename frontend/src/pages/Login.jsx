@@ -30,7 +30,7 @@ export default function Login() {
     try {
       // Step 1: Login
       await axios.post(
-        "http://localhost:4000/api/auth/loginAdmin",
+        "https://transparifyngo.onrender.com/api/auth/loginAdmin",
         { email, password },
         { withCredentials: true }
       );

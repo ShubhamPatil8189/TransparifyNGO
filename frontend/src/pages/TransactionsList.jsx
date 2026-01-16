@@ -51,7 +51,7 @@ export default function TransactionsList() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("http://localhost:4000/api/transactions/all")
+    fetch("https://transparifyngo.onrender.com/api/transactions/all")
       .then((res) => res.json())
       .then((data) => {
         setTransactions(data.transactions || []);
@@ -118,7 +118,7 @@ export default function TransactionsList() {
                         <td className="px-4 py-3">
                           <a
                          
-                            href={`http://localhost:4000/api/transactions/${t.receipt}/receipt`}
+                            href={`https://transparifyngo.onrender.com/api/transactions/${t.receipt}/receipt`}
                             target="_blank"
                             className="text-blue-600 underline cursor-pointer"
                           >

@@ -20,7 +20,7 @@ const AdminProfile = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const res = await axios.get("http://localhost:4000/api/user/me", {
+        const res = await axios.get("hhttps://transparifyngo.onrender.com/api/user/me", {
           withCredentials: true,
         });
         setUser(res.data);
@@ -52,7 +52,7 @@ const AdminProfile = () => {
   setLoading(true);
   try {
     const res = await axios.put(
-      "http://localhost:4000/api/user/me",
+      "https://transparifyngo.onrender.com/api/user/me",
       { name, currentPassword, newPassword },
       { withCredentials: true }
     );
@@ -61,7 +61,7 @@ const AdminProfile = () => {
     setAuthUser(null);
 
     // Logout via backend
-    await axios.get("http://localhost:4000/api/auth/logout", { withCredentials: true });
+    await axios.get("https://transparifyngo.onrender.com/api/auth/logout", { withCredentials: true });
 
     toast.success("Profile updated. Please log in again.");
     navigate("/login", { replace: true });

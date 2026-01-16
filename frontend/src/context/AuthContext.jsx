@@ -11,7 +11,7 @@ export const AuthProvider = ({ children }) => {
   const checkAuth = async () => {
     try {
       const res = await axios.get(
-        "http://localhost:4000/api/auth/checkAuth",
+        "https://transparifyngo.onrender.com/api/auth/checkAuth",
         { withCredentials: true }
       );
       setUser(res.data.user); // make sure backend returns { user: {...} }

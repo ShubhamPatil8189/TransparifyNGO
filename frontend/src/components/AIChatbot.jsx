@@ -24,7 +24,7 @@ const AIChatbot = () => {
         setLoading(true);
 
         try {
-            const res = await axios.post('http://localhost:4000/api/ai/chat', { message: userMsg });
+            const res = await axios.post('https://transparifyngo.onrender.com/api/ai/chat', { message: userMsg });
             setMessages(prev => [...prev, { role: 'assistant', text: res.data.response }]);
         } catch (error) {
             setMessages(prev => [...prev, { role: 'assistant', text: "Sorry, I'm having trouble connecting to my brain right now." }]);

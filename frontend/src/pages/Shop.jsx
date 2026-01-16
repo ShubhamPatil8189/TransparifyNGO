@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import DonorNavbar from "@/components/layout/DonorNavbar";
 
 axios.defaults.withCredentials = true;
-const API = "http://localhost:4000/api";
+const API = "https://transparifyngo.onrender.com/api";
 
 const getAuthHeaders = () => {
   const token = localStorage.getItem("token");

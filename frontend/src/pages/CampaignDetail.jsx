@@ -13,7 +13,7 @@ export default function CampaignDetail() {
   const [loading, setLoading] = useState(true);
   const [showEdit, setShowEdit] = useState(false); // <-- modal state
 
-  const API_BASE_URL = "http://localhost:4000/api";
+  const API_BASE_URL = "https://transparifyngo.onrender.com/api";
 
   useEffect(() => {
     const fetchCampaign = async () => {

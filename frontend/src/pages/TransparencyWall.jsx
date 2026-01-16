@@ -12,7 +12,7 @@ export default function TransparencyWall() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const res = await axios.get("http://localhost:4000/api/public/transparency");
+                const res = await axios.get("https://transparifyngo.onrender.com/api/public/transparency");
                 if (res.data.success) {
                     setData(res.data.stats);
                 }
@@ -50,7 +50,7 @@ export default function TransparencyWall() {
                         We believe in complete openness to build trust with our community.
                     </p>
                     <a
-                        href="http://localhost:4000/api/public/report"
+                        href="https://transparifyngo.onrender.com/api/public/report"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2"

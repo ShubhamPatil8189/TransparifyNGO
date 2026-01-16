@@ -20,7 +20,7 @@ const DonorProfile = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const res = await axios.get("http://localhost:4000/api/user/me", {
+        const res = await axios.get("https://transparifyngo.onrender.com/api/user/me", {
           withCredentials: true,
         });
         setUser(res.data);

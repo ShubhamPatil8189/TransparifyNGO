@@ -13,7 +13,7 @@ const DonationModal = ({ campaign, onClose, onSuccess, user }) => {
   const [inKindDetails, setInKindDetails] = useState([{ description: "", estimatedValue: "" }]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const API_BASE_URL = "http://localhost:4000/api";
+  const API_BASE_URL = "https://transparifyngo.onrender.com/api";
 
   // Handle in-kind item changes
   const handleInKindChange = (index, field, value) => {
@@ -286,7 +286,7 @@ export default function Donate() {
   const [user, setUser] = useState(null);
   const [userLoading, setUserLoading] = useState(true);
 
-  const API_BASE_URL = "http://localhost:4000/api";
+  const API_BASE_URL = "https://transparifyngo.onrender.com/api";
 
   // Fetch user information
   const fetchUser = async () => {
