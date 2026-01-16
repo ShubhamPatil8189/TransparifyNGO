@@ -240,7 +240,7 @@ async function registerTempUser(req, res) {
 
         if (tempUser) {
             // Use correct backend URL (port 4000)
-            await axios.post('http://localhost:4000/api/auth/sendOTP', {
+            await axios.post('https://transparifyngo.onrender.com/api/auth/sendOTP', {
             email: email,
             purpose: 'register' // specify purpose as "register"
             });

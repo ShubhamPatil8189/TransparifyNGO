@@ -1,7 +1,7 @@
 import requests
 import json
 
-BASE_URL = "http://localhost:8000"
+BASE_URL = "https://transparifyngo-aiservice.onrender.com"
 
 def test_endpoint(name, method, endpoint, payload=None):
     print(f"Testing {name} ({endpoint})...", end=" ")

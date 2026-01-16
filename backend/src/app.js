@@ -31,7 +31,8 @@ app.use("/receipts", express.static(path.join(__dirname, "receipts")));
 // CORS
 const allowedOrigins = [
   'http://localhost:4000',
-  'http://localhost:5000'
+  'http://localhost:5000',
+  "https://transparifyngo.onrender.com"
 ];
 
 app.use(cors({
