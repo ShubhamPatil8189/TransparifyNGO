@@ -33,7 +33,8 @@ const allowedOrigins = [
   'http://localhost:4000',
   'http://localhost:5000',
   "https://transparifyngo.onrender.com",
-  "https://transparify-ngo-3u1e.vercel.app"
+  "https://transparify-ngo-3u1e.vercel.app",
+  "https://transparifyngo-production.up.railway.app"
 ];
 
 app.use(cors({
