@@ -56,7 +56,7 @@ const ForgotPassword = () => {
 
     setSendingOtp(true);
     try {
-      await axios.post('https://transparifyngo-production.up.railway.app//api/auth/sendOtp', {
+      await axios.post('https://transparifyngo-production.up.railway.app/api/auth/sendOtp', {
         email,
         purpose: "forgot",
       });
@@ -79,7 +79,7 @@ const ForgotPassword = () => {
 
     setResendingOtp(true);
     try {
-      await axios.post('https://transparifyngo-production.up.railway.app//api/auth/sendOtp', {
+      await axios.post('https://transparifyngo-production.up.railway.app/api/auth/sendOtp', {
         email,
         purpose: "forgot",
       });
